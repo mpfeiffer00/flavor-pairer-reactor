@@ -43,10 +43,4 @@ public class FlavorInjector {
 		}).collect(Collectors.toList());
 		return nodes;
 	}
-
-	private static IngredientNode createIngredientNode(Ingredient ingredient) {
-		final IngredientNode node = new IngredientNode(ingredient);
-		// node.setPairings(ingredient.getPairings());
-		return node;
-	}
 }
