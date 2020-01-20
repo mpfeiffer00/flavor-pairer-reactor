@@ -5,6 +5,7 @@ import static com.tank.flavorpairer.IngredientAssistant.createIngredientNode;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
@@ -106,5 +107,19 @@ public class FlavorInjector_Depth_Test {
 
 		final int depth = FlavorInjector.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 4, depth);
+	}
+
+	@Test
+	public void testLeft2_Right0() {
+		// Tree
+		// ...C
+		// .A
+		// ..B
+		final IngredientTree tree = FlavorInjector
+				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLES));
+		final int depth = FlavorInjector.getDepth(tree.getRoot());
+		Assert.assertEquals("depth:not equals", 3, depth);
+		Assert.assertEquals("depth:not equals", 2, FlavorInjector.getDepth(tree.getRoot().getLeftNode()));
+		Assert.assertEquals("depth:not equals", 0, FlavorInjector.getDepth(tree.getRoot().getRightNode()));
 	}
 }

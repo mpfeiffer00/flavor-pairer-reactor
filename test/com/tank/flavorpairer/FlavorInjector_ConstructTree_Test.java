@@ -63,6 +63,20 @@ public class FlavorInjector_ConstructTree_Test {
 	}
 
 	@Test
+	public void testLeft2_Right0() {
+		// Tree
+		// ...C
+		// .A
+		// ..B
+		final IngredientTree expectedTree = createTree(createIngredientNode(Ingredient.CINNAMON,
+				createIngredientNode(Ingredient.APPLES, (IngredientNode) null, createIngredientNode(Ingredient.BACON)),
+				(IngredientNode) null));
+		final IngredientTree tree = FlavorInjector
+				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLES));
+		Assert.assertEquals(expectedTree, tree);
+	}
+
+	@Test
 	public void testLeft2_Right1() {
 		// Tree
 		// ...C
