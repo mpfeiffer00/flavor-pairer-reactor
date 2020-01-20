@@ -1,5 +1,7 @@
 package com.tank.flavorpairer;
 
+import static com.tank.flavorpairer.IngredientAssistant.createIngredientNode;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,16 +9,16 @@ import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
 
-public class FlavorInjectorTest {
+public class FlavorInjector_Depth_Test {
 	@Test
-	public void testDepth_Empty() {
+	public void testEmpty() {
 
 		final int depth = FlavorInjector.getDepth(new IngredientTree().getRoot());
 		Assert.assertEquals("depth:not equals", 0, depth);
 	}
 
 	@Test
-	public void testDepth_OnlyRoot() {
+	public void testOnlyRoot() {
 		// Tree
 		// .A
 		final IngredientTree tree = new IngredientTree();
@@ -27,7 +29,7 @@ public class FlavorInjectorTest {
 	}
 
 	@Test
-	public void testDepth_Simple_Balanced() {
+	public void testSimple_Balanced() {
 		// Tree
 		// .A
 		// B C
@@ -41,7 +43,7 @@ public class FlavorInjectorTest {
 	}
 
 	@Test
-	public void testDepth_RightNoNodes_Left1() {
+	public void testRightNoNodes_Left1() {
 		// Tree
 		// .A
 		// B
@@ -54,7 +56,7 @@ public class FlavorInjectorTest {
 	}
 
 	@Test
-	public void testDepth_Simple_Left2_Right1() {
+	public void testSimple_Left2_Right1() {
 		// Tree
 		// ..A
 		// .B C
@@ -71,7 +73,7 @@ public class FlavorInjectorTest {
 	}
 
 	@Test
-	public void testDepth_Simple_Left3_Right1() {
+	public void testSimple_Left3_Right1() {
 		// Tree
 		// ...C
 		// .B...Z
@@ -88,7 +90,7 @@ public class FlavorInjectorTest {
 	}
 
 	@Test
-	public void testDepth_Simple_Left4_Right1() {
+	public void testSimple_Left4_Right1() {
 		// Tree
 		// ....C
 		// ..B...Z
@@ -104,21 +106,5 @@ public class FlavorInjectorTest {
 
 		final int depth = FlavorInjector.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 4, depth);
-	}
-
-	private static IngredientNode createIngredientNode(Ingredient ingredient) {
-		return new IngredientNode(ingredient);
-	}
-
-	private static IngredientNode createIngredientNode(Ingredient ingredient, IngredientNode leftNode,
-			IngredientNode rightNode) {
-		final IngredientNode node = createIngredientNode(ingredient);
-		if (leftNode != null) {
-			node.setLeftNode(leftNode);
-		}
-		if (rightNode != null) {
-			node.setRightNode(rightNode);
-		}
-		return node;
 	}
 }

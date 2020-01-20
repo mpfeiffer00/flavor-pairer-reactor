@@ -1,5 +1,6 @@
 package com.tank.flavorpairer.object;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class IngredientNode {
@@ -48,5 +49,26 @@ public class IngredientNode {
 	public String toString() {
 		return "IngredientNode [name=" + name + ", leftNode=" + leftNode + ", rightNode=" + rightNode + ", pairings="
 				+ pairings + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(leftNode, name, pairings, rightNode);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final IngredientNode other = (IngredientNode) obj;
+		return Objects.equals(leftNode, other.leftNode) && Objects.equals(name, other.name)
+				&& Objects.equals(pairings, other.pairings) && Objects.equals(rightNode, other.rightNode);
 	}
 }

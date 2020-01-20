@@ -1,6 +1,5 @@
 package com.tank.flavorpairer;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,36 +12,35 @@ public class FlavorInjector {
 	private FlavorInjector() {
 	}
 
-	public static IngredientTree constructIngredientTree() {
+	public static IngredientTree constructIngredientTree(List<Ingredient> ingredients) {
 		final IngredientTree ingredientTree = new IngredientTree();
-		for (final IngredientNode ingredientNode : createIngredients()) {
+		for (final IngredientNode ingredientNode : createIngredients(ingredients)) {
 			if (ingredientTree.getRoot() == null) {
 				ingredientTree.setRoot(ingredientNode);
 				continue;
 			}
 			addIngredientToTree(ingredientTree.getRoot(), ingredientNode);
 		}
-		System.out.println(ingredientTree);
 		return ingredientTree;
 	}
 
-	private static void addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
-		if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
-			// root comes after ingredient name
-			if (root.getLeftNode() == null) {
-				root.setLeftNode(ingredientNodeToInsert);
+	private static void addIngredientToTree(IngredientNode node, IngredientNode ingredientNodeToInsert) {
+		if (node.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
+			// node comes after ingredient name
+			if (node.getLeftNode() == null) {
+				node.setLeftNode(ingredientNodeToInsert);
 			} else {
-				final IngredientNode previousNode = root.getLeftNode();
-				root.setLeftNode(ingredientNodeToInsert);
+				final IngredientNode previousNode = node.getLeftNode();
+				node.setLeftNode(ingredientNodeToInsert);
 				addIngredientToTree(ingredientNodeToInsert, previousNode);
 			}
-		} else if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
-			// root comes before ingredient name
-			if (root.getRightNode() == null) {
-				root.setRightNode(ingredientNodeToInsert);
+		} else if (node.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
+			// node comes before ingredient name
+			if (node.getRightNode() == null) {
+				node.setRightNode(ingredientNodeToInsert);
 			} else {
-				final IngredientNode previousNode = root.getRightNode();
-				root.setRightNode(ingredientNodeToInsert);
+				final IngredientNode previousNode = node.getRightNode();
+				node.setRightNode(ingredientNodeToInsert);
 				addIngredientToTree(ingredientNodeToInsert, previousNode);
 			}
 		} else {
@@ -50,8 +48,8 @@ public class FlavorInjector {
 		}
 	}
 
-	private static List<IngredientNode> createIngredients() {
-		final List<IngredientNode> nodes = Arrays.asList(Ingredient.values()).stream().map(i -> {
+	private static List<IngredientNode> createIngredients(List<Ingredient> ingredients) {
+		final List<IngredientNode> nodes = ingredients.stream().map(i -> {
 			final IngredientNode node = new IngredientNode(i);
 			// node.setPairings(i.getPairings());
 			return node;
