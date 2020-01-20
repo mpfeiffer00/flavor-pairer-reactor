@@ -4,12 +4,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
+import com.tank.flavorpairer.object.IngredientTree;
 
 public class FlavorInjector {
+	private FlavorInjector() {
+	}
 
-	public static void addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
+	public static IngredientTree constructIngredientTree() {
+		final IngredientTree ingredientTree = new IngredientTree();
+		for (final IngredientNode ingredientNode : createIngredients()) {
+			if (ingredientTree.getRoot() == null) {
+				ingredientTree.setRoot(ingredientNode);
+				continue;
+			}
+			addIngredientToTree(ingredientTree.getRoot(), ingredientNode);
+		}
+		System.out.println(ingredientTree);
+		return ingredientTree;
+	}
+
+	private static void addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
 		if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
 			// root comes after ingredient name
 			if (root.getLeftNode() == null) {
@@ -33,7 +50,7 @@ public class FlavorInjector {
 		}
 	}
 
-	public static List<IngredientNode> createIngredients() {
+	private static List<IngredientNode> createIngredients() {
 		final List<IngredientNode> nodes = Arrays.asList(Ingredient.values()).stream().map(i -> {
 			final IngredientNode node = new IngredientNode(i);
 			// node.setPairings(i.getPairings());
@@ -42,6 +59,7 @@ public class FlavorInjector {
 		return nodes;
 	}
 
+	@VisibleForTesting
 	public static int getDepth(IngredientNode ingredientNode) {
 		if (ingredientNode == null) {
 			return 0;
