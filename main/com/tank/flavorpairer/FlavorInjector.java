@@ -1,9 +1,7 @@
 package com.tank.flavorpairer;
 
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.tank.flavorpairer.object.Ingredient;
@@ -42,5 +40,30 @@ public class FlavorInjector {
 			return node;
 		}).collect(Collectors.toList());
 		return nodes;
+	}
+
+	public static int getDepth(IngredientNode ingredientNode) {
+		if (ingredientNode == null) {
+			return 0;
+		}
+
+		if (ingredientNode.getLeftNode() == null && ingredientNode.getRightNode() == null) {
+			return 1;
+		}
+
+		final int sizeOfLeft = getDepth(ingredientNode.getLeftNode(), 1);
+		final int sizeOfRight = getDepth(ingredientNode.getRightNode(), 1);
+		return Integer.max(sizeOfLeft, sizeOfRight);
+	}
+
+	private static int getDepth(IngredientNode ingredientNode, int size) {
+		if (ingredientNode == null) {
+			return size;
+		}
+
+		++size;
+		final int sizeOfLeft = getDepth(ingredientNode.getLeftNode(), size);
+		final int sizeOfRight = getDepth(ingredientNode.getRightNode(), size);
+		return Integer.max(sizeOfLeft, sizeOfRight);
 	}
 }
