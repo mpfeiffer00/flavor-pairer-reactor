@@ -1,17 +1,15 @@
 package com.tank.flavorpairer;
 
-import com.tank.flavorpairer.object.IngredientNode;
+import java.util.Arrays;
+
+import com.tank.flavorpairer.object.Ingredient;
+import com.tank.flavorpairer.object.IngredientTree;
 
 public class FlavorEngine {
 
 	public static void main(String[] args) {
-		IngredientNode rootIngredientNode = null;
-		for (final IngredientNode ingredientNode : FlavorInjector.createIngredients()) {
-			if (rootIngredientNode == null) {
-				rootIngredientNode = ingredientNode;
-				continue;
-			}
-			FlavorInjector.addIngredientToTree(rootIngredientNode, ingredientNode);
-		}
+		final IngredientTree ingredientTree = FlavorInjector
+				.constructIngredientTree(Arrays.asList(Ingredient.values()));
+		System.out.println(ingredientTree);
 	}
 }
