@@ -36,7 +36,7 @@ public class FlavorInjector_Depth_Test {
 		// B C
 
 		final IngredientTree tree = new IngredientTree();
-		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.APPLES),
+		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.ZUCCHINI)));
 
 		final int depth = FlavorInjector.getDepth(tree.getRoot());
@@ -49,7 +49,7 @@ public class FlavorInjector_Depth_Test {
 		// .A
 		// B
 		final IngredientTree tree = new IngredientTree();
-		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.APPLES),
+		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null));
 
 		final int depth = FlavorInjector.getDepth(tree.getRoot());
@@ -63,7 +63,7 @@ public class FlavorInjector_Depth_Test {
 		// .B C
 		// D
 
-		final IngredientNode leftNode = createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLES),
+		final IngredientNode leftNode = createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null);
 
 		final IngredientTree tree = new IngredientTree();
@@ -80,7 +80,7 @@ public class FlavorInjector_Depth_Test {
 		// .B...Z
 		// A B
 
-		final IngredientNode leftNode = createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLES),
+		final IngredientNode leftNode = createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.BELL_PEPPER));
 
 		final IngredientTree tree = new IngredientTree();
@@ -98,7 +98,7 @@ public class FlavorInjector_Depth_Test {
 		// A..B
 		// ..B
 
-		final IngredientNode leftNode = createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLES),
+		final IngredientNode leftNode = createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.BELL_PEPPER, createIngredientNode(Ingredient.BASIL),
 						(IngredientNode) null));
 
@@ -112,14 +112,13 @@ public class FlavorInjector_Depth_Test {
 	@Test
 	public void testLeft2_Right0() {
 		// Tree
-		// ...C
-		// .A
-		// ..B
+		// .B
+		// A C
 		final IngredientTree tree = FlavorInjector
-				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLES));
+				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLE));
 		final int depth = FlavorInjector.getDepth(tree.getRoot());
-		Assert.assertEquals("depth:not equals", 3, depth);
-		Assert.assertEquals("depth:not equals", 2, FlavorInjector.getDepth(tree.getRoot().getLeftNode()));
-		Assert.assertEquals("depth:not equals", 0, FlavorInjector.getDepth(tree.getRoot().getRightNode()));
+		Assert.assertEquals("depth:not equals", 2, depth);
+		Assert.assertEquals("depth:not equals", 1, FlavorInjector.getDepth(tree.getRoot().getLeftNode()));
+		Assert.assertEquals("depth:not equals", 1, FlavorInjector.getDepth(tree.getRoot().getRightNode()));
 	}
 }

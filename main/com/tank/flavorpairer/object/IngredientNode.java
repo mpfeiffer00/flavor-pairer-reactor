@@ -5,11 +5,13 @@ import java.util.Set;
 
 public class IngredientNode {
 	private String name;
+	private Ingredient ingredient;
 	private IngredientNode leftNode;
 	private IngredientNode rightNode;
 	private Set<Ingredient> pairings;
 
 	public IngredientNode(Ingredient ingredient) {
+		this.ingredient = ingredient;
 		this.name = ingredient.getName();
 	}
 
@@ -19,6 +21,14 @@ public class IngredientNode {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Ingredient getIngredient() {
+		return ingredient;
+	}
+
+	public void setIngredient(Ingredient ingredient) {
+		this.ingredient = ingredient;
 	}
 
 	public IngredientNode getLeftNode() {
@@ -45,15 +55,30 @@ public class IngredientNode {
 		this.pairings = pairings;
 	}
 
+	public void print() {
+		System.out.println(getName());
+		print(getRightNode(), "   ", "R");
+		print(getLeftNode(), "   ", "L");
+	}
+
+	private void print(IngredientNode node, String indentation, String position) {
+		if (node == null) {
+			return;
+		}
+		System.out.println(indentation + position + ": " + node.getName());
+		print(node.getRightNode(), indentation + "   ", "R");
+		print(node.getLeftNode(), indentation + "   ", "L");
+	}
+
 	@Override
 	public String toString() {
-		return "IngredientNode [name=" + name + ", leftNode=" + leftNode + ", rightNode=" + rightNode + ", pairings="
-				+ pairings + "]";
+		return "IngredientNode [name=" + name + ", ingredient=" + ingredient + ", leftNode=" + leftNode + ", rightNode="
+				+ rightNode + ", pairings=" + pairings + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(leftNode, name, pairings, rightNode);
+		return Objects.hash(ingredient, leftNode, name, pairings, rightNode);
 	}
 
 	@Override
@@ -68,7 +93,8 @@ public class IngredientNode {
 			return false;
 		}
 		final IngredientNode other = (IngredientNode) obj;
-		return Objects.equals(leftNode, other.leftNode) && Objects.equals(name, other.name)
-				&& Objects.equals(pairings, other.pairings) && Objects.equals(rightNode, other.rightNode);
+		return ingredient == other.ingredient && Objects.equals(leftNode, other.leftNode)
+				&& Objects.equals(name, other.name) && Objects.equals(pairings, other.pairings)
+				&& Objects.equals(rightNode, other.rightNode);
 	}
 }

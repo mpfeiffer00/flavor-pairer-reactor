@@ -6,8 +6,8 @@ import com.google.common.collect.Sets;
 
 public enum Ingredient {
 	BASE("base", Sets.newHashSet()),
-	APPLES("apple", Sets.newHashSet(Ingredient.BASE)),
-	BACON("bacon", Sets.newHashSet(Ingredient.APPLES)),
+	APPLE("apple", Sets.newHashSet(Ingredient.BASE)),
+	BACON("bacon", Sets.newHashSet(Ingredient.APPLE)),
 	BASIL("basil", Sets.newHashSet(Ingredient.BASE)),
 	BELL_PEPPER("bell pepper", Sets.newHashSet(Ingredient.BASE)),
 	CINNAMON("cinnamon", Sets.newHashSet(Ingredient.BASE)),
@@ -22,7 +22,7 @@ public enum Ingredient {
 	CHEDDAR_CHEESE("cheddar cheese", Sets.newHashSet(Ingredient.BASE)),
 	GOAT_CHEESE("goat cheese", Sets.newHashSet(Ingredient.BASE)),
 	GRUYERE_CHEESE("gruyere cheese", Sets.newHashSet(Ingredient.BASE)),
-	THYME("thyme", Sets.newHashSet(Ingredient.APPLES, Ingredient.BASIL, Ingredient.BELL_PEPPER)),
+	THYME("thyme", Sets.newHashSet(Ingredient.APPLE, Ingredient.BASIL, Ingredient.BELL_PEPPER)),
 	ZUCCHINI("zucchini", Sets.newHashSet(Ingredient.BASIL, Ingredient.BELL_PEPPER, Ingredient.CHEDDAR_CHEESE,
 			Ingredient.GRUYERE_CHEESE, Ingredient.GOAT_CHEESE));
 

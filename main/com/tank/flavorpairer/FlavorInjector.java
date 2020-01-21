@@ -13,39 +13,64 @@ public class FlavorInjector {
 	}
 
 	public static IngredientTree constructIngredientTree(List<Ingredient> ingredients) {
-		final IngredientTree ingredientTree = new IngredientTree();
+		IngredientNode rootIngredientNode = null;
 		for (final IngredientNode ingredientNode : createIngredients(ingredients)) {
-			if (ingredientTree.getRoot() == null) {
-				ingredientTree.setRoot(ingredientNode);
-				continue;
-			}
-			addIngredientToTree(ingredientTree.getRoot(), ingredientNode);
+			rootIngredientNode = addIngredientToTree(rootIngredientNode, ingredientNode);
 		}
+		final IngredientTree ingredientTree = new IngredientTree();
+		ingredientTree.setRoot(rootIngredientNode);
 		return ingredientTree;
 	}
 
-	private static void addIngredientToTree(IngredientNode node, IngredientNode ingredientNodeToInsert) {
-		if (node.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
+	private static IngredientNode addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
+		if (root == null) {
+			return ingredientNodeToInsert;
+		}
+
+		if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
 			// node comes after ingredient name
-			if (node.getLeftNode() == null) {
-				node.setLeftNode(ingredientNodeToInsert);
-			} else {
-				final IngredientNode previousNode = node.getLeftNode();
-				node.setLeftNode(ingredientNodeToInsert);
-				addIngredientToTree(ingredientNodeToInsert, previousNode);
+			if ((getDepth(root.getLeftNode()) - getDepth(root.getRightNode())) > 0) {
+				// Rotating root to right
+				final IngredientNode rootToRightNode = new IngredientNode(root.getIngredient());
+				rootToRightNode.setRightNode(root.getRightNode());
+				root.setRightNode(rootToRightNode);
+
+				// Rotating left node to root
+				final IngredientNode leftRootNode = root.getLeftNode();
+				root.setName(leftRootNode.getName());
+				root.setIngredient(leftRootNode.getIngredient());
+				root.setLeftNode(leftRootNode.getLeftNode());
 			}
-		} else if (node.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
-			// node comes before ingredient name
-			if (node.getRightNode() == null) {
-				node.setRightNode(ingredientNodeToInsert);
+
+			if (root.getLeftNode() == null) {
+				root.setLeftNode(ingredientNodeToInsert);
 			} else {
-				final IngredientNode previousNode = node.getRightNode();
-				node.setRightNode(ingredientNodeToInsert);
-				addIngredientToTree(ingredientNodeToInsert, previousNode);
+				addIngredientToTree(root.getLeftNode(), ingredientNodeToInsert);
+			}
+		} else if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
+			// node comes before ingredient name
+			if ((getDepth(root.getRightNode()) - getDepth(root.getLeftNode())) > 0) {
+				// Rotating root to left
+				final IngredientNode rootToLeftNode = new IngredientNode(root.getIngredient());
+				rootToLeftNode.setLeftNode(root.getLeftNode());
+				root.setLeftNode(rootToLeftNode);
+
+				// Rotating right node to root
+				final IngredientNode rightRootNode = root.getRightNode();
+				root.setName(rightRootNode.getName());
+				root.setIngredient(rightRootNode.getIngredient());
+				root.setRightNode(rightRootNode.getRightNode());
+			}
+
+			if (root.getRightNode() == null) {
+				root.setRightNode(ingredientNodeToInsert);
+			} else {
+				addIngredientToTree(root.getRightNode(), ingredientNodeToInsert);
 			}
 		} else {
 			throw new RuntimeException("duplicate ingredient: " + ingredientNodeToInsert.getName());
 		}
+		return root;
 	}
 
 	private static List<IngredientNode> createIngredients(List<Ingredient> ingredients) {
