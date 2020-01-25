@@ -38,6 +38,7 @@ public class FlavorInjector {
 				// Rotating left node to root
 				final IngredientNode leftRootNode = root.getLeftNode();
 				root.setName(leftRootNode.getName());
+				root.setPairings(leftRootNode.getPairings());
 				root.setIngredient(leftRootNode.getIngredient());
 				root.setLeftNode(leftRootNode.getLeftNode());
 			}
@@ -58,6 +59,7 @@ public class FlavorInjector {
 				// Rotating right node to root
 				final IngredientNode rightRootNode = root.getRightNode();
 				root.setName(rightRootNode.getName());
+				root.setPairings(rightRootNode.getPairings());
 				root.setIngredient(rightRootNode.getIngredient());
 				root.setRightNode(rightRootNode.getRightNode());
 			}
@@ -76,7 +78,7 @@ public class FlavorInjector {
 	private static List<IngredientNode> createIngredients(List<Ingredient> ingredients) {
 		final List<IngredientNode> nodes = ingredients.stream().map(i -> {
 			final IngredientNode node = new IngredientNode(i);
-			// node.setPairings(i.getPairings());
+			node.setPairings(i.getPairings());
 			return node;
 		}).collect(Collectors.toList());
 		return nodes;

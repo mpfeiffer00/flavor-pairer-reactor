@@ -15,7 +15,7 @@ public enum Ingredient {
 	BACON("bacon", "mushroom"),
 
 	// bell peppers, esp. red, roasted
-	BASIL("basil", "apricot, bell pepper", "chive", "cinnamon", "fennel", "rosemary", "zucchini"),
+	BASIL("basil", "apricot", "bell pepper", "chive", "cinnamon", "fennel", "rosemary", "zucchini"),
 
 	// CHEESE, esp. feta, Fontina, goat, mozzarella, Parmesan
 	BELL_PEPPER("bell pepper", "bacon", "basil", "bell pepper", "cheese goat", "chive", "fennel", "rosemary", "thyme",
@@ -77,7 +77,8 @@ public enum Ingredient {
 
 	public EnumSet<Ingredient> getPairings() {
 		final EnumSet<Ingredient> ingredients = EnumSet.noneOf(Ingredient.class);
-		ingredients.addAll(Arrays.asList(pairings).stream().map(e -> ingredientsByName.get(e)).collect(Collectors.toList()));
+		ingredients.addAll(
+				Arrays.asList(pairings).stream().map(e -> ingredientsByName.get(e)).collect(Collectors.toList()));
 		return ingredients;
 	}
 }

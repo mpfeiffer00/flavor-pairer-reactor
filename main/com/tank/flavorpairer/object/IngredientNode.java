@@ -13,6 +13,7 @@ public class IngredientNode {
 	public IngredientNode(Ingredient ingredient) {
 		this.ingredient = ingredient;
 		this.name = ingredient.getName();
+		this.pairings = ingredient.getPairings();
 	}
 
 	public String getName() {
