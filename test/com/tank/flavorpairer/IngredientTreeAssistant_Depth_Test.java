@@ -10,7 +10,7 @@ import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
 
-public class FlavorInjector_Depth_Test {
+public class IngredientTreeAssistant_Depth_Test {
 	@Test
 	public void testEmpty() {
 

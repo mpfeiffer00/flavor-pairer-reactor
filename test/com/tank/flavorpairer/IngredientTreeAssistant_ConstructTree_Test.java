@@ -10,7 +10,7 @@ import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
 
-public class FlavorInjector_ConstructTree_Test {
+public class IngredientTreeAssistant_ConstructTree_Test {
 	@Test
 	public void testNoElements() {
 		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList());
