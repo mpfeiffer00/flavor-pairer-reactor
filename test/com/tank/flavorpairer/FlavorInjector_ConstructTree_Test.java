@@ -1,6 +1,6 @@
 package com.tank.flavorpairer;
 
-import static com.tank.flavorpairer.IngredientAssistant.createIngredientNode;
+import static com.tank.flavorpairer.IngredientTestUtil.createIngredientNode;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import com.tank.flavorpairer.object.IngredientTree;
 public class FlavorInjector_ConstructTree_Test {
 	@Test
 	public void testNoElements() {
-		final IngredientTree tree = FlavorInjector.constructIngredientTree(Lists.newArrayList());
+		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList());
 		Assert.assertNull(tree.getRoot());
 	}
 
@@ -21,8 +21,9 @@ public class FlavorInjector_ConstructTree_Test {
 	public void testOneElement() {
 		// Tree
 		// A
-		final IngredientTree expectedTree = createTree(createIngredientNode(Ingredient.APPLE));
-		final IngredientTree tree = FlavorInjector.constructIngredientTree(Lists.newArrayList(Ingredient.APPLE));
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.APPLE));
+		final IngredientTree tree = IngredientTreeAssistant
+				.constructIngredientTree(Lists.newArrayList(Ingredient.APPLE));
 		Assert.assertEquals(expectedTree, tree);
 	}
 
@@ -31,9 +32,9 @@ public class FlavorInjector_ConstructTree_Test {
 		// Tree
 		// .B
 		// A
-		final IngredientTree expectedTree = createTree(
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(
 				createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE), (IngredientNode) null));
-		final IngredientTree tree = FlavorInjector
+		final IngredientTree tree = IngredientTreeAssistant
 				.constructIngredientTree(Lists.newArrayList(Ingredient.BACON, Ingredient.APPLE));
 		Assert.assertEquals(expectedTree, tree);
 	}
@@ -43,9 +44,9 @@ public class FlavorInjector_ConstructTree_Test {
 		// Tree
 		// B
 		// .C
-		final IngredientTree expectedTree = createTree(createIngredientNode(Ingredient.BACON, (IngredientNode) null,
-				createIngredientNode(Ingredient.CINNAMON)));
-		final IngredientTree tree = FlavorInjector
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
+				(IngredientNode) null, createIngredientNode(Ingredient.CINNAMON)));
+		final IngredientTree tree = IngredientTreeAssistant
 				.constructIngredientTree(Lists.newArrayList(Ingredient.BACON, Ingredient.CINNAMON));
 		Assert.assertEquals(expectedTree, tree);
 	}
@@ -55,9 +56,9 @@ public class FlavorInjector_ConstructTree_Test {
 		// Tree
 		// .B
 		// A C
-		final IngredientTree expectedTree = createTree(createIngredientNode(Ingredient.BACON,
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
 				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.CINNAMON)));
-		final IngredientTree tree = FlavorInjector
+		final IngredientTree tree = IngredientTreeAssistant
 				.constructIngredientTree(Lists.newArrayList(Ingredient.BACON, Ingredient.APPLE, Ingredient.CINNAMON));
 		Assert.assertEquals(expectedTree, tree);
 	}
@@ -67,9 +68,9 @@ public class FlavorInjector_ConstructTree_Test {
 		// Tree
 		// .B
 		// A C
-		final IngredientTree expectedTree = createTree(createIngredientNode(Ingredient.BACON,
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
 				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.CINNAMON)));
-		final IngredientTree tree = FlavorInjector
+		final IngredientTree tree = IngredientTreeAssistant
 				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLE));
 		Assert.assertEquals(expectedTree, tree);
 	}
@@ -80,10 +81,10 @@ public class FlavorInjector_ConstructTree_Test {
 		// ...C
 		// .B...Z
 		// A
-		final IngredientTree expectedTree = createTree(createIngredientNode(Ingredient.CINNAMON,
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientTree tree = FlavorInjector.constructIngredientTree(
+		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(
 				Lists.newArrayList(Ingredient.CINNAMON, Ingredient.ZUCCHINI, Ingredient.BACON, Ingredient.APPLE));
 		Assert.assertEquals(expectedTree, tree);
 	}
@@ -101,11 +102,11 @@ public class FlavorInjector_ConstructTree_Test {
 		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.CINNAMON, (IngredientNode) null,
 				createIngredientNode(Ingredient.ZUCCHINI));
 
-		final IngredientTree expectedTree = createTree(
-				createIngredientNode(Ingredient.BACON, leftIngredientNode, rightIngredientNode));
+		final IngredientTree expectedTree = IngredientTestUtil
+				.createTree(createIngredientNode(Ingredient.BACON, leftIngredientNode, rightIngredientNode));
 
-		final IngredientTree tree = FlavorInjector.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON,
-				Ingredient.ZUCCHINI, Ingredient.BACON, Ingredient.APPLE, Ingredient.BASIL));
+		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList(
+				Ingredient.CINNAMON, Ingredient.ZUCCHINI, Ingredient.BACON, Ingredient.APPLE, Ingredient.BASIL));
 		Assert.assertEquals(expectedTree, tree);
 	}
 
@@ -114,9 +115,9 @@ public class FlavorInjector_ConstructTree_Test {
 		// Tree
 		// .C
 		// B Z
-		final IngredientTree expectedTree = createTree(createIngredientNode(Ingredient.CINNAMON,
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BACON), createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientTree tree = FlavorInjector.constructIngredientTree(
+		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(
 				Lists.newArrayList(Ingredient.BACON, Ingredient.CINNAMON, Ingredient.ZUCCHINI));
 		Assert.assertEquals(expectedTree, tree);
 	}
@@ -127,10 +128,10 @@ public class FlavorInjector_ConstructTree_Test {
 		// ...C
 		// .B...T
 		// .......Z
-		final IngredientTree expectedTree = createTree(
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(
 				createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.BACON), createIngredientNode(
 						Ingredient.THYME, (IngredientNode) null, createIngredientNode(Ingredient.ZUCCHINI))));
-		final IngredientTree tree = FlavorInjector.constructIngredientTree(
+		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(
 				Lists.newArrayList(Ingredient.CINNAMON, Ingredient.THYME, Ingredient.BACON, Ingredient.ZUCCHINI));
 		Assert.assertEquals(expectedTree, tree);
 	}
@@ -148,17 +149,11 @@ public class FlavorInjector_ConstructTree_Test {
 		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.THYME, (IngredientNode) null,
 				createIngredientNode(Ingredient.ZUCCHINI));
 
-		final IngredientTree expectedTree = createTree(
-				createIngredientNode(Ingredient.CINNAMON, leftIngredientNode, rightIngredientNode));
+		final IngredientTree expectedTree = IngredientTestUtil
+				.createTree(createIngredientNode(Ingredient.CINNAMON, leftIngredientNode, rightIngredientNode));
 
-		final IngredientTree tree = FlavorInjector.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON,
-				Ingredient.THYME, Ingredient.ZUCCHINI, Ingredient.APPLE, Ingredient.BASIL));
+		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList(
+				Ingredient.CINNAMON, Ingredient.THYME, Ingredient.ZUCCHINI, Ingredient.APPLE, Ingredient.BASIL));
 		Assert.assertEquals(expectedTree, tree);
-	}
-
-	private static IngredientTree createTree(IngredientNode ingredientNode) {
-		final IngredientTree tree = new IngredientTree();
-		tree.setRoot(ingredientNode);
-		return tree;
 	}
 }

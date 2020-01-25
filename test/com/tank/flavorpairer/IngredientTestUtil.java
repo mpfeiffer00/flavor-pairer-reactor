@@ -2,9 +2,16 @@ package com.tank.flavorpairer;
 
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
+import com.tank.flavorpairer.object.IngredientTree;
 
-public class IngredientAssistant {
-	private IngredientAssistant() {
+public class IngredientTestUtil {
+	private IngredientTestUtil() {
+	}
+
+	public static IngredientTree createTree(IngredientNode ingredientNode) {
+		final IngredientTree tree = new IngredientTree();
+		tree.setRoot(ingredientNode);
+		return tree;
 	}
 
 	public static IngredientNode createIngredientNode(Ingredient ingredient) {

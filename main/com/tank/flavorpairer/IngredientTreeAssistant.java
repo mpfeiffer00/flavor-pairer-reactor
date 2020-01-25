@@ -8,8 +8,8 @@ import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
 
-public class FlavorInjector {
-	private FlavorInjector() {
+public class IngredientTreeAssistant {
+	private IngredientTreeAssistant() {
 	}
 
 	public static IngredientTree constructIngredientTree(List<Ingredient> ingredients) {
@@ -20,6 +20,21 @@ public class FlavorInjector {
 		final IngredientTree ingredientTree = new IngredientTree();
 		ingredientTree.setRoot(rootIngredientNode);
 		return ingredientTree;
+	}
+
+	public static IngredientNode findIngredient(Ingredient ingredient, IngredientTree ingredientTree) {
+		return findNode(ingredient, ingredientTree.getRoot());
+	}
+
+	private static IngredientNode findNode(Ingredient ingredient, IngredientNode ingredientNode) {
+		if (ingredientNode == null) {
+			return ingredientNode;
+		} else if (ingredient.equals(ingredientNode.getIngredient())) {
+			return ingredientNode;
+		}
+
+		final IngredientNode leftNode = findNode(ingredient, ingredientNode.getLeftNode());
+		return leftNode != null ? leftNode : findNode(ingredient, ingredientNode.getRightNode());
 	}
 
 	private static IngredientNode addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
