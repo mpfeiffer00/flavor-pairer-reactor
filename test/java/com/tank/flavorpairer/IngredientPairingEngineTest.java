@@ -16,7 +16,6 @@ public class IngredientPairingEngineTest {
 				.doesNotContain(Ingredient.BACON);
 		Assertions.assertThat(pairingResponse.getSecondLevelIngredientPairings()).isNotEmpty()
 				.contains(Ingredient.BACON);
-
 	}
 
 	private static IngredientPairingResponse computePairings(Ingredient ingredient) {
