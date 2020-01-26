@@ -37,7 +37,7 @@ public enum Ingredient {
 	CORIANDER("coriander", "apple", "basil", "cinnamon", "fennel", "nutmeg"),
 
 	FENNEL("fennel", "apple", "basil", "bell pepper", "chive", "coriander", "cheese goat", "cheese gruyere", "nutmeg",
-			"rosemary", "thyem", "zucchini"),
+			"rosemary", "thyme", "zucchini"),
 
 	MADEIRA("madeira"),
 
@@ -46,7 +46,7 @@ public enum Ingredient {
 
 	NUTMEG("nutmeg", "apple", "cinnamon", "coriander", "mushroom", "thyme"),
 
-	ROSEMARY("rosemary", "apple", "apricto", "bacon", "bell pepper", "chive", "fennel", "mushroom", "thyme",
+	ROSEMARY("rosemary", "apple", "apricot", "bacon", "bell pepper", "chive", "fennel", "mushroom", "thyme",
 			"zucchini"),
 
 	THYME("thyme", "apple", "bacon", "basil", "bell pepper", "chive", "fennel", "mushroom", "nutmeg", "rosemary",

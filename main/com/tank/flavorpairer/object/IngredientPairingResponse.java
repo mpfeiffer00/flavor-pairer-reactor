@@ -1,43 +1,46 @@
 package com.tank.flavorpairer.object;
 
-import java.util.EnumSet;
+import java.util.Set;
 
 public class IngredientPairingResponse {
-	private String ingredientName;
-	private EnumSet<Ingredient> firstLevelIngredientPairings;
-	private EnumSet<Ingredient> secondLevelIngredientPairings;
-	private EnumSet<Ingredient> thirdLevelIngredientPairings;
+	private Ingredient ingredient;
+	private Set<Ingredient> firstLevelIngredientPairings;
+	private Set<Ingredient> secondLevelIngredientPairings;
+	private Set<Ingredient> thirdLevelIngredientPairings;
 
-	public String getIngredientName() {
-		return ingredientName;
+	public IngredientPairingResponse(Ingredient ingredient) {
+		this.ingredient = ingredient;
 	}
 
-	public void setIngredientName(String ingredientName) {
-		this.ingredientName = ingredientName;
+	public Ingredient getIngredient() {
+		return ingredient;
 	}
 
-	public EnumSet<Ingredient> getFirstLevelIngredientPairings() {
+	public void setIngredient(Ingredient ingredient) {
+		this.ingredient = ingredient;
+	}
+
+	public Set<Ingredient> getFirstLevelIngredientPairings() {
 		return firstLevelIngredientPairings;
 	}
 
-	public void setFirstLevelIngredientPairings(EnumSet<Ingredient> firstLevelIngredientPairings) {
+	public void setFirstLevelIngredientPairings(Set<Ingredient> firstLevelIngredientPairings) {
 		this.firstLevelIngredientPairings = firstLevelIngredientPairings;
 	}
 
-	public EnumSet<Ingredient> getSecondLevelIngredientPairings() {
+	public Set<Ingredient> getSecondLevelIngredientPairings() {
 		return secondLevelIngredientPairings;
 	}
 
-	public void setSecondLevelIngredientPairings(EnumSet<Ingredient> secondLevelIngredientPairings) {
+	public void setSecondLevelIngredientPairings(Set<Ingredient> secondLevelIngredientPairings) {
 		this.secondLevelIngredientPairings = secondLevelIngredientPairings;
 	}
 
-	public EnumSet<Ingredient> getThirdLevelIngredientPairings() {
+	public Set<Ingredient> getThirdLevelIngredientPairings() {
 		return thirdLevelIngredientPairings;
 	}
 
-	public void setThirdLevelIngredientPairings(EnumSet<Ingredient> thirdLevelIngredientPairings) {
+	public void setThirdLevelIngredientPairings(Set<Ingredient> thirdLevelIngredientPairings) {
 		this.thirdLevelIngredientPairings = thirdLevelIngredientPairings;
 	}
-
 }

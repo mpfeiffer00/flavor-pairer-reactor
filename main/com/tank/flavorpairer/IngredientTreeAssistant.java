@@ -1,6 +1,8 @@
 package com.tank.flavorpairer;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -35,6 +37,24 @@ public class IngredientTreeAssistant {
 
 		final IngredientNode leftNode = findNode(ingredient, ingredientNode.getLeftNode());
 		return leftNode != null ? leftNode : findNode(ingredient, ingredientNode.getRightNode());
+	}
+
+	public static Set<Ingredient> computeSecondLevelPairings(Ingredient ingredient, IngredientTree ingredientTree) {
+		final IngredientNode ingredientNode = findIngredient(ingredient, ingredientTree);
+		if (ingredientNode == null) {
+			return null;
+		}
+
+		final Set<Ingredient> pairings = new HashSet<>();
+		for (final Ingredient ingredientPairing : ingredientNode.getPairings()) {
+			final IngredientNode ingredientPairingNode = findIngredient(ingredientPairing, ingredientTree);
+			if (ingredientPairingNode == null) {
+				continue;
+			}
+			pairings.addAll(ingredientPairingNode.getPairings());
+		}
+
+		return pairings;
 	}
 
 	private static IngredientNode addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
