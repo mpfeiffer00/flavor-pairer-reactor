@@ -9,7 +9,6 @@ public class IngredientNode {
 	private Ingredient ingredient;
 	private IngredientNode leftNode;
 	private IngredientNode rightNode;
-	private IngredientNode parentNode;
 	private Set<Ingredient> pairings;
 	private boolean isVisited;
 
@@ -69,14 +68,6 @@ public class IngredientNode {
 
 	public void unmarkAsVisited() {
 		this.isVisited = false;
-	}
-
-	public IngredientNode getParentNode() {
-		return parentNode;
-	}
-
-	public void setParentNode(IngredientNode parentNode) {
-		this.parentNode = parentNode;
 	}
 
 	public int size() {
@@ -147,7 +138,7 @@ public class IngredientNode {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ingredient, isVisited, leftNode, name, pairings, parentNode, rightNode);
+		return Objects.hash(ingredient, isVisited, leftNode, name, pairings, rightNode);
 	}
 
 	@Override
@@ -164,7 +155,6 @@ public class IngredientNode {
 		final IngredientNode other = (IngredientNode) obj;
 		return ingredient == other.ingredient && isVisited == other.isVisited
 				&& Objects.equals(leftNode, other.leftNode) && Objects.equals(name, other.name)
-				&& Objects.equals(pairings, other.pairings) && Objects.equals(parentNode, other.parentNode)
-				&& Objects.equals(rightNode, other.rightNode);
+				&& Objects.equals(pairings, other.pairings) && Objects.equals(rightNode, other.rightNode);
 	}
 }
