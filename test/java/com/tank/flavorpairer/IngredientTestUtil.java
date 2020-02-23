@@ -18,6 +18,24 @@ public class IngredientTestUtil {
 		return new IngredientNode(ingredient);
 	}
 
+	public static IngredientNode createIngredientNodeAndMark(Ingredient ingredient) {
+		final IngredientNode node = createIngredientNode(ingredient);
+		node.markAsVisited();
+		return node;
+	}
+
+	public static IngredientNode createIngredientNodeAndMark(Ingredient ingredient, IngredientNode leftNode,
+			IngredientNode rightNode) {
+		final IngredientNode node = createIngredientNodeAndMark(ingredient);
+		if (leftNode != null) {
+			node.setLeftNode(leftNode);
+		}
+		if (rightNode != null) {
+			node.setRightNode(rightNode);
+		}
+		return node;
+	}
+
 	public static IngredientNode createIngredientNode(Ingredient ingredient, IngredientNode leftNode,
 			IngredientNode rightNode) {
 		final IngredientNode node = createIngredientNode(ingredient);

@@ -15,6 +15,8 @@ public class IngredientPairingEngine {
 	}
 
 	public IngredientPairingResponse computePairings(Ingredient ingredient) {
+
+		ingredientTree.getRoot().print();
 		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(ingredient, ingredientTree);
 		return ingredientNode == null ? null : buildResponse(ingredientNode);
 	}
@@ -24,6 +26,8 @@ public class IngredientPairingEngine {
 		response.setFirstLevelIngredientPairings(ingredientNode.getPairings());
 		response.setSecondLevelIngredientPairings(
 				IngredientTreeAssistant.computeSecondLevelPairings(ingredientNode.getIngredient(), ingredientTree));
+		response.setThirdLevelIngredientPairings(
+				IngredientTreeAssistant.computeThirdLevelPairings(ingredientNode.getIngredient(), ingredientTree));
 
 		System.out.println("First Level Pairings: ");
 		response.getFirstLevelIngredientPairings().stream().forEach(System.out::println);
@@ -31,6 +35,10 @@ public class IngredientPairingEngine {
 		System.out.println("-------------------");
 		System.out.println("Second Level Pairings: ");
 		response.getSecondLevelIngredientPairings().stream().forEach(System.out::println);
+
+		System.out.println("-------------------");
+		System.out.println("Third Level Pairings: ");
+		response.getThirdLevelIngredientPairings().stream().forEach(System.out::println);
 
 		return response;
 	}

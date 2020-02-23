@@ -2,6 +2,8 @@ package com.tank.flavorpairer;
 
 import static com.tank.flavorpairer.IngredientTestUtil.createIngredientNode;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -66,8 +68,13 @@ public class IngredientTreeAssistant_ConstructTree_Test {
 	@Test
 	public void testLeft2_Right0() {
 		// Tree
+		// ..C
 		// .B
-		// A C
+		// A
+		// ->
+		// .B
+		// A.C
+
 		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
 				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.CINNAMON)));
 		final IngredientTree tree = IngredientTreeAssistant
@@ -92,33 +99,40 @@ public class IngredientTreeAssistant_ConstructTree_Test {
 	@Test
 	public void testLeft3_Right1() {
 		// Tree
-		// ...Bac
-		// .A.....C
-		// ..Bas...Z
+		// ...BAS
+		// ..BAC.C
+		// A......Z
 
-		final IngredientNode leftIngredientNode = createIngredientNode(Ingredient.APPLE, (IngredientNode) null,
-				createIngredientNode(Ingredient.BASIL));
+		final IngredientNode leftIngredientNode = createIngredientNode(Ingredient.BACON,
+				createIngredientNode(Ingredient.APPLE), (IngredientNode) null);
 
 		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.CINNAMON, (IngredientNode) null,
 				createIngredientNode(Ingredient.ZUCCHINI));
 
 		final IngredientTree expectedTree = IngredientTestUtil
-				.createTree(createIngredientNode(Ingredient.BACON, leftIngredientNode, rightIngredientNode));
+				.createTree(createIngredientNode(Ingredient.BASIL, leftIngredientNode, rightIngredientNode));
 
 		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList(
 				Ingredient.CINNAMON, Ingredient.ZUCCHINI, Ingredient.BACON, Ingredient.APPLE, Ingredient.BASIL));
+
 		Assert.assertEquals(expectedTree, tree);
 	}
 
 	@Test
 	public void testLeft0_Right2() {
 		// Tree
+		// .B
+		// ..C
+		// ...Z
+		// ->
 		// .C
-		// B Z
+		// B.Z
+
 		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BACON), createIngredientNode(Ingredient.ZUCCHINI)));
 		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(
 				Lists.newArrayList(Ingredient.BACON, Ingredient.CINNAMON, Ingredient.ZUCCHINI));
+
 		Assert.assertEquals(expectedTree, tree);
 	}
 
@@ -142,9 +156,13 @@ public class IngredientTreeAssistant_ConstructTree_Test {
 		// ...C
 		// A....T
 		// .Bas...Z
+		// ->
+		// ...C
+		// .B...T
+		// A.....Z
 
-		final IngredientNode leftIngredientNode = createIngredientNode(Ingredient.APPLE, (IngredientNode) null,
-				createIngredientNode(Ingredient.BASIL));
+		final IngredientNode leftIngredientNode = createIngredientNode(Ingredient.BASIL,
+				createIngredientNode(Ingredient.APPLE), (IngredientNode) null);
 
 		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.THYME, (IngredientNode) null,
 				createIngredientNode(Ingredient.ZUCCHINI));
@@ -155,5 +173,53 @@ public class IngredientTreeAssistant_ConstructTree_Test {
 		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList(
 				Ingredient.CINNAMON, Ingredient.THYME, Ingredient.ZUCCHINI, Ingredient.APPLE, Ingredient.BASIL));
 		Assert.assertEquals(expectedTree, tree);
+	}
+
+	@Test
+	public void testRightRotate_Sorted() {
+		// Tree
+		// B
+		// .F
+		// C
+		// ->
+		// Tree
+		// ..C
+		// B..F
+
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.CINNAMON,
+				createIngredientNode(Ingredient.BACON), createIngredientNode(Ingredient.FENNEL)));
+		final IngredientTree tree = IngredientTreeAssistant
+				.constructIngredientTree(Lists.newArrayList(Ingredient.BACON, Ingredient.FENNEL, Ingredient.CINNAMON));
+		Assert.assertEquals(expectedTree, tree);
+	}
+
+	@Test
+	public void testRightRotate_RightNodeRotate() {
+		// Tree
+		// .B
+		// ...F
+		// ..C.Z
+		// ->
+		// Tree
+		// ..F
+		// B..Z
+		// .C
+
+		final IngredientNode rightNode = createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
+				createIngredientNode(Ingredient.ZUCCHINI));
+		final IngredientTree expectedTree = IngredientTestUtil.createTree(
+				createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.BACON), rightNode));
+
+		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(
+				Lists.newArrayList(Ingredient.BACON, Ingredient.FENNEL, Ingredient.CINNAMON, Ingredient.ZUCCHINI));
+
+		Assert.assertEquals(expectedTree, tree);
+	}
+
+	@Test
+	public void testFullTree() {
+		final IngredientTree ingredientTree = IngredientTreeAssistant
+				.constructIngredientTree(Arrays.asList(Ingredient.values()));
+		Assert.assertEquals(Ingredient.values().length, ingredientTree.getRoot().count());
 	}
 }
