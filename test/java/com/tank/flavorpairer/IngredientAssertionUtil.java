@@ -8,7 +8,7 @@ public class IngredientAssertionUtil {
 
 	public static void containsAllIngredients(final IngredientNode expectedIngredientNode,
 			final IngredientNode actualIngredientNode) {
-		Assertions.assertThat(IngredientTreeAssistant.getIngredients(actualIngredientNode))
-				.containsAll(IngredientTreeAssistant.getIngredients(expectedIngredientNode));
+		Assertions.assertThat(IngredientTreeUtil.getIngredients(actualIngredientNode))
+				.containsAll(IngredientTreeUtil.getIngredients(expectedIngredientNode));
 	}
 }

@@ -9,10 +9,10 @@ import org.junit.Test;
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 
-public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
+public class IngredientTreeUtil_FindFurthestUnmarkedNodeFromRoot_Test {
 	@Test
 	public void testEmpty() {
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(null);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(null);
 		Assert.assertEquals(null, ingredientNode);
 	}
 
@@ -21,7 +21,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// Tree
 		// A*
 		final IngredientNode rootNode = createIngredientNodeAndMark(Ingredient.APPLE);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(null, ingredientNode);
 	}
 
@@ -32,7 +32,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// A*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -43,7 +43,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// ..C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, (IngredientNode) null,
 				createIngredientNodeAndMark(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -54,7 +54,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// A*C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), createIngredientNodeAndMark(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -65,7 +65,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// A C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNodeAndMark(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -76,7 +76,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// A*C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.CINNAMON, ingredientNode.getIngredient());
 	}
 
@@ -89,7 +89,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNodeAndMark(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -103,7 +103,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 				Ingredient.CINNAMON, createIngredientNode(Ingredient.BASIL,
 						createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNodeAndMark(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -117,7 +117,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 				Ingredient.CINNAMON, createIngredientNode(Ingredient.BASIL,
 						createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 
@@ -130,7 +130,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 
@@ -143,7 +143,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 
@@ -152,7 +152,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// Tree
 		// A
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -163,7 +163,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// A
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -174,7 +174,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// A
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -185,7 +185,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		// A C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.CINNAMON, ingredientNode.getIngredient());
 	}
 
@@ -198,7 +198,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -211,7 +211,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, (IngredientNode) null,
 				createIngredientNode(Ingredient.FENNEL, createIngredientNode(Ingredient.CINNAMON),
 						(IngredientNode) null));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.CINNAMON, ingredientNode.getIngredient());
 	}
 
@@ -224,7 +224,7 @@ public class IngredientTreeAssistant_FindFurthestUnmarkedNodeFromRoot_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findFurthestUnmarkedNodeFromRoot(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findFurthestUnmarkedNodeFromRoot(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 }

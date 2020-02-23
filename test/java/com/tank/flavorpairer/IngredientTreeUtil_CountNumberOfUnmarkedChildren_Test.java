@@ -9,13 +9,13 @@ import org.junit.Test;
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 
-public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
+public class IngredientTreeUtil_CountNumberOfUnmarkedChildren_Test {
 	@Test
 	public void testOnlyRoot_marked() {
 		// Tree
 		// A*
 		final IngredientNode rootNode = createIngredientNodeAndMark(Ingredient.APPLE);
-		Assert.assertEquals(0, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(0, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// A*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null);
-		Assert.assertEquals(1, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(1, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -35,7 +35,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// ..B*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE, (IngredientNode) null,
 				createIngredientNodeAndMark(Ingredient.BASIL));
-		Assert.assertEquals(1, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(1, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// A C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNodeAndMark(Ingredient.CINNAMON));
-		Assert.assertEquals(2, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(2, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// A*C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), createIngredientNodeAndMark(Ingredient.CINNAMON));
-		Assert.assertEquals(1, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(1, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 				Ingredient.CINNAMON, createIngredientNode(Ingredient.BASIL,
 						createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNodeAndMark(Ingredient.ZUCCHINI));
-		Assert.assertEquals(2, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(2, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 				Ingredient.CINNAMON, createIngredientNodeAndMark(Ingredient.BASIL,
 						createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNodeAndMark(Ingredient.ZUCCHINI));
-		Assert.assertEquals(0, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(0, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 				Ingredient.CINNAMON, createIngredientNodeAndMark(Ingredient.BASIL,
 						createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNodeAndMark(Ingredient.ZUCCHINI));
-		Assert.assertEquals(1, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(1, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNodeAndMark(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						(IngredientNode) null, createIngredientNode(Ingredient.ZUCCHINI)));
-		Assert.assertEquals(3, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(3, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	// @Test
@@ -118,7 +118,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		Assert.assertEquals(5, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(5, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -126,7 +126,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// Tree
 		// A
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE);
-		Assert.assertEquals(1, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(1, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -136,7 +136,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// A
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null);
-		Assert.assertEquals(2, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(2, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -146,7 +146,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// ..B
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE, (IngredientNode) null,
 				createIngredientNode(Ingredient.BASIL));
-		Assert.assertEquals(2, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(2, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		// A C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.CINNAMON));
-		Assert.assertEquals(3, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(3, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -168,7 +168,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		Assert.assertEquals(4, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(4, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -180,7 +180,7 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNode(Ingredient.ZUCCHINI)));
-		Assert.assertEquals(4, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(4, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 
 	@Test
@@ -192,6 +192,6 @@ public class IngredientTreeAssistant_CountNumberOfUnmarkedChildren_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		Assert.assertEquals(5, IngredientTreeAssistant.countNumberOfUnmarkedChildren(rootNode));
+		Assert.assertEquals(5, IngredientTreeUtil.countNumberOfUnmarkedChildren(rootNode));
 	}
 }

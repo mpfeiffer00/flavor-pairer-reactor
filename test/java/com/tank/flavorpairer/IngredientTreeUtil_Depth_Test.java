@@ -10,11 +10,11 @@ import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
 
-public class IngredientTreeAssistant_Depth_Test {
+public class IngredientTreeUtil_Depth_Test {
 	@Test
 	public void testEmpty() {
 
-		final int depth = IngredientTreeAssistant.getDepth(new IngredientTree().getRoot());
+		final int depth = IngredientTreeUtil.getDepth(new IngredientTree().getRoot());
 		Assert.assertEquals("depth:not equals", 0, depth);
 	}
 
@@ -25,7 +25,7 @@ public class IngredientTreeAssistant_Depth_Test {
 		final IngredientTree tree = new IngredientTree();
 		tree.setRoot(createIngredientNode(Ingredient.CINNAMON));
 
-		final int depth = IngredientTreeAssistant.getDepth(tree.getRoot());
+		final int depth = IngredientTreeUtil.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 1, depth);
 	}
 
@@ -39,7 +39,7 @@ public class IngredientTreeAssistant_Depth_Test {
 		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.ZUCCHINI)));
 
-		final int depth = IngredientTreeAssistant.getDepth(tree.getRoot());
+		final int depth = IngredientTreeUtil.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 2, depth);
 	}
 
@@ -52,7 +52,7 @@ public class IngredientTreeAssistant_Depth_Test {
 		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null));
 
-		final int depth = IngredientTreeAssistant.getDepth(tree.getRoot());
+		final int depth = IngredientTreeUtil.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 2, depth);
 	}
 
@@ -69,7 +69,7 @@ public class IngredientTreeAssistant_Depth_Test {
 		final IngredientTree tree = new IngredientTree();
 		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, leftNode, createIngredientNode(Ingredient.ZUCCHINI)));
 
-		final int depth = IngredientTreeAssistant.getDepth(tree.getRoot());
+		final int depth = IngredientTreeUtil.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 3, depth);
 	}
 
@@ -86,7 +86,7 @@ public class IngredientTreeAssistant_Depth_Test {
 		final IngredientTree tree = new IngredientTree();
 		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, leftNode, createIngredientNode(Ingredient.ZUCCHINI)));
 
-		final int depth = IngredientTreeAssistant.getDepth(tree.getRoot());
+		final int depth = IngredientTreeUtil.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 3, depth);
 	}
 
@@ -105,7 +105,7 @@ public class IngredientTreeAssistant_Depth_Test {
 		final IngredientTree tree = new IngredientTree();
 		tree.setRoot(createIngredientNode(Ingredient.CINNAMON, leftNode, createIngredientNode(Ingredient.ZUCCHINI)));
 
-		final int depth = IngredientTreeAssistant.getDepth(tree.getRoot());
+		final int depth = IngredientTreeUtil.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 4, depth);
 	}
 
@@ -116,9 +116,9 @@ public class IngredientTreeAssistant_Depth_Test {
 		// A C
 		final IngredientTree tree = IngredientTreeAssistant
 				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLE));
-		final int depth = IngredientTreeAssistant.getDepth(tree.getRoot());
+		final int depth = IngredientTreeUtil.getDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 2, depth);
-		Assert.assertEquals("depth:not equals", 1, IngredientTreeAssistant.getDepth(tree.getRoot().getLeftNode()));
-		Assert.assertEquals("depth:not equals", 1, IngredientTreeAssistant.getDepth(tree.getRoot().getRightNode()));
+		Assert.assertEquals("depth:not equals", 1, IngredientTreeUtil.getDepth(tree.getRoot().getLeftNode()));
+		Assert.assertEquals("depth:not equals", 1, IngredientTreeUtil.getDepth(tree.getRoot().getRightNode()));
 	}
 }

@@ -9,10 +9,10 @@ import org.junit.Test;
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 
-public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
+public class IngredientTreeUtil_FindLargestUnmarkedNode_Test {
 	@Test
 	public void testEmpty() {
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(null);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(null);
 		Assert.assertEquals(null, ingredientNode);
 	}
 
@@ -21,7 +21,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// Tree
 		// A*
 		final IngredientNode rootNode = createIngredientNodeAndMark(Ingredient.APPLE);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(null, ingredientNode);
 	}
 
@@ -32,7 +32,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// A*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -43,7 +43,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// ..C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, (IngredientNode) null,
 				createIngredientNodeAndMark(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -54,7 +54,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// A*C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), createIngredientNodeAndMark(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -65,7 +65,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// A C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNodeAndMark(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -76,7 +76,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// A*C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNodeAndMark(Ingredient.APPLE), createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.CINNAMON, ingredientNode.getIngredient());
 	}
 
@@ -89,7 +89,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNodeAndMark(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.CINNAMON, ingredientNode.getIngredient());
 	}
 
@@ -103,7 +103,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 				Ingredient.CINNAMON, createIngredientNode(Ingredient.BASIL,
 						createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNodeAndMark(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -117,7 +117,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 				Ingredient.CINNAMON, createIngredientNode(Ingredient.BASIL,
 						createIngredientNodeAndMark(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 
@@ -130,7 +130,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 
@@ -143,7 +143,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNodeAndMark(Ingredient.ZUCCHINI)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.FENNEL, ingredientNode.getIngredient());
 	}
 
@@ -156,7 +156,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNodeAndMark(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNodeAndMark(Ingredient.ZUCCHINI)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.CORIANDER, ingredientNode.getIngredient());
 	}
 
@@ -165,7 +165,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// Tree
 		// A
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -176,7 +176,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// A
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.BASIL, ingredientNode.getIngredient());
 	}
 
@@ -187,7 +187,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// A
 		final IngredientNode rootNode = createIngredientNodeAndMark(Ingredient.BASIL,
 				createIngredientNode(Ingredient.APPLE), (IngredientNode) null);
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.APPLE, ingredientNode.getIngredient());
 	}
 
@@ -198,7 +198,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// ..C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, (IngredientNode) null,
 				createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.CINNAMON, ingredientNode.getIngredient());
 	}
 
@@ -209,7 +209,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		// A C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.CINNAMON, ingredientNode.getIngredient());
 	}
 
@@ -222,7 +222,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 
@@ -235,7 +235,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, (IngredientNode) null,
 				createIngredientNode(Ingredient.FENNEL, createIngredientNode(Ingredient.CINNAMON),
 						(IngredientNode) null));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.FENNEL, ingredientNode.getIngredient());
 	}
 
@@ -248,7 +248,7 @@ public class IngredientTreeAssistant_FindLargestUnmarkedNode_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findLargestUnmarkedNode(rootNode);
+		final IngredientNode ingredientNode = IngredientTreeUtil.findLargestUnmarkedNode(rootNode);
 		Assert.assertEquals(Ingredient.ZUCCHINI, ingredientNode.getIngredient());
 	}
 }
