@@ -15,9 +15,9 @@ public class IngredientPairingEngine {
 	}
 
 	public IngredientPairingResponse computePairings(Ingredient ingredient) {
-
 		ingredientTree.getRoot().print();
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(ingredient, ingredientTree);
+		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(ingredient,
+				ingredientTree.getRoot());
 		return ingredientNode == null ? null : buildResponse(ingredientNode);
 	}
 

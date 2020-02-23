@@ -17,7 +17,8 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientNode appleNode = createIngredientNode(Ingredient.APPLE);
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(appleNode);
 
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.APPLE, ingredientTree);
+		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.APPLE,
+				ingredientTree.getRoot());
 
 		Assert.assertEquals(appleNode, ingredientNode);
 	}
@@ -29,7 +30,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.APPLE));
 
 		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
-				ingredientTree);
+				ingredientTree.getRoot());
 
 		Assert.assertEquals(null, ingredientNode);
 	}
@@ -41,7 +42,8 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		// A
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(
 				createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE), (IngredientNode) null));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.APPLE, ingredientTree);
+		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.APPLE,
+				ingredientTree.getRoot());
 		Assert.assertEquals(createIngredientNode(Ingredient.APPLE), ingredientNode);
 	}
 
@@ -53,7 +55,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(
 				createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE), (IngredientNode) null));
 		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
-				ingredientTree);
+				ingredientTree.getRoot());
 		Assert.assertEquals(null, ingredientNode);
 	}
 
@@ -65,7 +67,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
 				(IngredientNode) null, createIngredientNode(Ingredient.CINNAMON)));
 		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.CINNAMON,
-				ingredientTree);
+				ingredientTree.getRoot());
 		Assert.assertEquals(createIngredientNode(Ingredient.CINNAMON), ingredientNode);
 	}
 
@@ -77,7 +79,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
 				(IngredientNode) null, createIngredientNode(Ingredient.CINNAMON)));
 		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
-				ingredientTree);
+				ingredientTree.getRoot());
 		Assert.assertEquals(null, ingredientNode);
 	}
 
@@ -98,7 +100,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 				.createTree(createIngredientNode(Ingredient.BACON, leftIngredientNode, rightIngredientNode));
 
 		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
-				ingredientTree);
+				ingredientTree.getRoot());
 		Assert.assertEquals(createIngredientNode(Ingredient.ZUCCHINI), ingredientNode);
 	}
 
@@ -118,7 +120,8 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientTree ingredientTree = IngredientTestUtil
 				.createTree(createIngredientNode(Ingredient.BACON, leftIngredientNode, rightIngredientNode));
 
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.THYME, ingredientTree);
+		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.THYME,
+				ingredientTree.getRoot());
 		Assert.assertEquals(null, ingredientNode);
 	}
 }

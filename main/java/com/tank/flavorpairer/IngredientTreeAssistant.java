@@ -17,7 +17,18 @@ public class IngredientTreeAssistant {
 	private IngredientTreeAssistant() {
 	}
 
+	/**
+	 * Constructs a balanced {@link IngredientTree} with the given
+	 * {@link Ingredient}s.
+	 * 
+	 * @param ingredients The List of {@link Ingredient}s to be placed in the tree.
+	 * @return A non-null {@link IngredientTree}.
+	 */
 	public static IngredientTree constructIngredientTree(List<Ingredient> ingredients) {
+		if (ingredients == null || ingredients.isEmpty()) {
+			return new IngredientTree();
+		}
+
 		IngredientNode rootIngredientNode = null;
 		for (final IngredientNode ingredientNode : createIngredients(ingredients)) {
 			rootIngredientNode = addIngredientToTree(rootIngredientNode, ingredientNode);
@@ -27,30 +38,36 @@ public class IngredientTreeAssistant {
 		return ingredientTree;
 	}
 
-	public static IngredientNode findIngredient(Ingredient ingredient, IngredientTree ingredientTree) {
-		return findNode(ingredient, ingredientTree.getRoot());
-	}
+	/**
+	 * Finds the given {@link Ingredient} in the {@link IngredientTree}.
+	 * 
+	 * @param ingredient     The {@link Ingredient} to find.
+	 * @param ingredientTree The {@link IngredientTree} to inspect.
+	 * @return The {@link IngredientNode} for the given {@link Ingredient}. Will be
+	 *         null if not found.
+	 */
+	public static IngredientNode findIngredient(Ingredient ingredient, IngredientNode ingredientNode) {
+		if (ingredient == null || ingredientNode == null) {
+			return null;
+		}
 
-	private static IngredientNode findNode(Ingredient ingredient, IngredientNode ingredientNode) {
-		if (ingredientNode == null) {
-			return ingredientNode;
-		} else if (ingredient.equals(ingredientNode.getIngredient())) {
+		if (ingredient.equals(ingredientNode.getIngredient())) {
 			return ingredientNode;
 		}
 
-		final IngredientNode leftNode = findNode(ingredient, ingredientNode.getLeftNode());
-		return leftNode != null ? leftNode : findNode(ingredient, ingredientNode.getRightNode());
+		final IngredientNode leftNode = findIngredient(ingredient, ingredientNode.getLeftNode());
+		return leftNode != null ? leftNode : findIngredient(ingredient, ingredientNode.getRightNode());
 	}
 
 	public static Set<Ingredient> computeSecondLevelPairings(Ingredient ingredient, IngredientTree ingredientTree) {
-		final IngredientNode ingredientNode = findIngredient(ingredient, ingredientTree);
+		final IngredientNode ingredientNode = findIngredient(ingredient, ingredientTree.getRoot());
 		if (ingredientNode == null) {
 			return null;
 		}
 
 		final Set<Ingredient> pairings = new HashSet<>();
 		for (final Ingredient ingredientPairing : ingredientNode.getPairings()) {
-			final IngredientNode ingredientPairingNode = findIngredient(ingredientPairing, ingredientTree);
+			final IngredientNode ingredientPairingNode = findIngredient(ingredientPairing, ingredientTree.getRoot());
 			if (ingredientPairingNode == null) {
 				continue;
 			}
@@ -69,7 +86,7 @@ public class IngredientTreeAssistant {
 		final Set<Ingredient> shit = new HashSet<>();
 		shit.addAll(pairings);
 		for (final Ingredient pairedIngredient : pairings) {
-			final IngredientNode pairedNode = findIngredient(pairedIngredient, ingredientTree);
+			final IngredientNode pairedNode = findIngredient(pairedIngredient, ingredientTree.getRoot());
 			if (pairedNode == null) {
 				System.out.println("null: " + pairedIngredient);
 				continue;
