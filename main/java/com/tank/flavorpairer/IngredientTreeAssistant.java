@@ -1,5 +1,6 @@
 package com.tank.flavorpairer;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class IngredientTreeAssistant {
 	 * @param ingredient     The {@link Ingredient} to find.
 	 * @param ingredientTree The {@link IngredientTree} to inspect.
 	 * @return The {@link IngredientNode} for the given {@link Ingredient}. Will be
-	 *         null if not found.
+	 *         null if not found or given {@link IngredientNode} is null.
 	 */
 	public static IngredientNode findIngredient(Ingredient ingredient, IngredientNode ingredientNode) {
 		if (ingredient == null || ingredientNode == null) {
@@ -59,33 +60,63 @@ public class IngredientTreeAssistant {
 		return leftNode != null ? leftNode : findIngredient(ingredient, ingredientNode.getRightNode());
 	}
 
+	/**
+	 * Computes the second level pairings for the given {@link Ingredient} using the
+	 * {@link IngredientTree}. <br>
+	 * TODO: Add examples.
+	 * 
+	 * @param ingredient     The {@link Ingredient} to construct pairings for.
+	 * @param ingredientTree The {@link IngredientTree} of ingredients to inspect.
+	 * @return The second level pairing Set of {@link Ingredient}s. Will be null if
+	 *         {@link Ingredient} or {@link IngredientNode} is null. Will be empty
+	 *         if no pairings are found.
+	 */
 	public static Set<Ingredient> computeSecondLevelPairings(Ingredient ingredient, IngredientTree ingredientTree) {
+		if (ingredient == null || ingredientTree == null || ingredientTree.getRoot() == null) {
+			return null;
+		}
+
 		final IngredientNode ingredientNode = findIngredient(ingredient, ingredientTree.getRoot());
 		if (ingredientNode == null) {
-			return null;
+			return Collections.emptySet();
 		}
 
-		final Set<Ingredient> pairings = new HashSet<>();
-		for (final Ingredient ingredientPairing : ingredientNode.getPairings()) {
-			final IngredientNode ingredientPairingNode = findIngredient(ingredientPairing, ingredientTree.getRoot());
-			if (ingredientPairingNode == null) {
+		final Set<Ingredient> secondLevelPairings = new HashSet<>();
+		for (final Ingredient pairedIngredient : ingredientNode.getPairings()) {
+			final IngredientNode pairedIngredientNode = findIngredient(pairedIngredient, ingredientTree.getRoot());
+			if (pairedIngredientNode == null) {
 				continue;
 			}
-			pairings.addAll(ingredientPairingNode.getPairings());
+			secondLevelPairings.addAll(pairedIngredientNode.getPairings());
 		}
 
-		return pairings;
+		return secondLevelPairings;
 	}
 
+	/**
+	 * Computes the third level pairings for the given {@link Ingredient} using the
+	 * {@link IngredientTree}. <br>
+	 * TODO: Add examples.
+	 * 
+	 * @param ingredient     The {@link Ingredient} to construct pairings for.
+	 * @param ingredientTree The {@link IngredientTree} of ingredients to inspect.
+	 * @return The third level pairing Set of {@link Ingredient}s. Will be null if
+	 *         {@link Ingredient} or {@link IngredientNode} is null. Will be empty
+	 *         if no pairings are found.
+	 */
 	public static Set<Ingredient> computeThirdLevelPairings(Ingredient ingredient, IngredientTree ingredientTree) {
-		final Set<Ingredient> pairings = computeSecondLevelPairings(ingredient, ingredientTree);
-		if (pairings == null) {
+		if (ingredient == null || ingredientTree == null || ingredientTree.getRoot() == null) {
 			return null;
 		}
 
-		final Set<Ingredient> shit = new HashSet<>();
-		shit.addAll(pairings);
-		for (final Ingredient pairedIngredient : pairings) {
+		final Set<Ingredient> secondLevelPairings = computeSecondLevelPairings(ingredient, ingredientTree);
+		if (secondLevelPairings == null || secondLevelPairings.isEmpty()) {
+			return Collections.emptySet();
+		}
+
+		final Set<Ingredient> thirdLevelPairings = new HashSet<>();
+		thirdLevelPairings.addAll(secondLevelPairings);
+		for (final Ingredient pairedIngredient : secondLevelPairings) {
 			final IngredientNode pairedNode = findIngredient(pairedIngredient, ingredientTree.getRoot());
 			if (pairedNode == null) {
 				System.out.println("null: " + pairedIngredient);
@@ -95,58 +126,52 @@ public class IngredientTreeAssistant {
 			if (pairedNode.getPairings().contains(ingredient)) {
 				System.out.println("back to the source: " + pairedNode.getName());
 			}
-			shit.addAll(pairedNode.getPairings());
+			thirdLevelPairings.addAll(pairedNode.getPairings());
 		}
 
-		return shit;
+		return thirdLevelPairings;
 	}
 
+	/**
+	 * Add the given node to the tree.
+	 * 
+	 * @param root                   The root {@link IngredientNode}.
+	 * @param ingredientNodeToInsert The {@link IngredientNode} to insert into the
+	 *                               tree.
+	 * @return The non-null root {@link IngredientNode}.
+	 */
 	private static IngredientNode addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
 		if (root == null) {
 			return ingredientNodeToInsert;
 		}
 
 		if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
-			// node comes after ingredient name
-			if ((getDepth(root.getLeftNode()) - getDepth(root.getRightNode())) > 0) {
-				if (root.getLeftNode() == null) {
-					root.setLeftNode(ingredientNodeToInsert);
-				} else {
-					root.setLeftNode(addIngredientToTree(root.getLeftNode(), ingredientNodeToInsert));
-				}
+			if (root.getLeftNode() == null) {
+				root.setLeftNode(ingredientNodeToInsert);
+			} else {
+				root.setLeftNode(addIngredientToTree(root.getLeftNode(), ingredientNodeToInsert));
+			}
 
+			if ((getDepth(root.getLeftNode()) - getDepth(root.getRightNode())) > 1) {
 				if (root.getLeftNode().getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
 					return rotateWithLeftChild(root);
 				} else {
 					return doubleWithLeftChild(root);
 				}
 			}
-
-			if (root.getLeftNode() == null) {
-				root.setLeftNode(ingredientNodeToInsert);
-			} else {
-				root.setLeftNode(addIngredientToTree(root.getLeftNode(), ingredientNodeToInsert));
-			}
 		} else if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
-			// node comes before ingredient name
-			if ((getDepth(root.getRightNode()) - getDepth(root.getLeftNode())) > 0) {
-				if (root.getRightNode() == null) {
-					root.setRightNode(ingredientNodeToInsert);
-				} else {
-					root.setRightNode(addIngredientToTree(root.getRightNode(), ingredientNodeToInsert));
-				}
+			if (root.getRightNode() == null) {
+				root.setRightNode(ingredientNodeToInsert);
+			} else {
+				root.setRightNode(addIngredientToTree(root.getRightNode(), ingredientNodeToInsert));
+			}
 
+			if ((getDepth(root.getRightNode()) - getDepth(root.getLeftNode())) > 1) {
 				if (root.getRightNode().getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
 					return rotateWithRightChild(root);
 				} else {
 					return doubleWithRightChild(root);
 				}
-			}
-
-			if (root.getRightNode() == null) {
-				root.setRightNode(ingredientNodeToInsert);
-			} else {
-				root.setRightNode(addIngredientToTree(root.getRightNode(), ingredientNodeToInsert));
 			}
 		} else {
 			throw new RuntimeException("duplicate ingredient: " + ingredientNodeToInsert.getName());
@@ -154,28 +179,28 @@ public class IngredientTreeAssistant {
 		return root;
 	}
 
-	private static IngredientNode rotateWithLeftChild(IngredientNode root) {
-		final IngredientNode k1 = root.getLeftNode();
-		root.setLeftNode(k1.getRightNode());
-		k1.setRightNode(root);
-		return k1;
+	private static IngredientNode rotateWithLeftChild(IngredientNode node) {
+		final IngredientNode leftRootNode = node.getLeftNode();
+		node.setLeftNode(leftRootNode.getRightNode());
+		leftRootNode.setRightNode(node);
+		return leftRootNode;
 	}
 
-	private static IngredientNode rotateWithRightChild(IngredientNode k1) {
-		final IngredientNode k2 = k1.getRightNode();
-		k1.setRightNode(k2.getLeftNode());
-		k2.setLeftNode(k1);
-		return k2;
+	private static IngredientNode rotateWithRightChild(IngredientNode node) {
+		final IngredientNode rightRootNode = node.getRightNode();
+		node.setRightNode(rightRootNode.getLeftNode());
+		rightRootNode.setLeftNode(node);
+		return rightRootNode;
 	}
 
-	private static IngredientNode doubleWithLeftChild(IngredientNode k3) {
-		k3.setLeftNode(rotateWithRightChild(k3.getLeftNode()));
-		return rotateWithLeftChild(k3);
+	private static IngredientNode doubleWithLeftChild(IngredientNode node) {
+		node.setLeftNode(rotateWithRightChild(node.getLeftNode()));
+		return rotateWithLeftChild(node);
 	}
 
-	private static IngredientNode doubleWithRightChild(IngredientNode k1) {
-		k1.setRightNode(rotateWithLeftChild(k1.getRightNode()));
-		return rotateWithRightChild(k1);
+	private static IngredientNode doubleWithRightChild(IngredientNode node) {
+		node.setRightNode(rotateWithLeftChild(node.getRightNode()));
+		return rotateWithRightChild(node);
 	}
 
 	public static IngredientNode deleteNodeFromTree(IngredientNode root, final Ingredient ingredient) {

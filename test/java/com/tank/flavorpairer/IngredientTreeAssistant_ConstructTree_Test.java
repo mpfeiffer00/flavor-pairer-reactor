@@ -102,15 +102,18 @@ public class IngredientTreeAssistant_ConstructTree_Test {
 		// ...BAS
 		// ..BAC.C
 		// A......Z
+		// ->
+		// .....C
+		// .Bac...Z
+		// A..Bas
 
 		final IngredientNode leftIngredientNode = createIngredientNode(Ingredient.BACON,
-				createIngredientNode(Ingredient.APPLE), (IngredientNode) null);
+				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.BASIL));
 
-		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.CINNAMON, (IngredientNode) null,
-				createIngredientNode(Ingredient.ZUCCHINI));
+		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.ZUCCHINI);
 
 		final IngredientTree expectedTree = IngredientTestUtil
-				.createTree(createIngredientNode(Ingredient.BASIL, leftIngredientNode, rightIngredientNode));
+				.createTree(createIngredientNode(Ingredient.CINNAMON, leftIngredientNode, rightIngredientNode));
 
 		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList(
 				Ingredient.CINNAMON, Ingredient.ZUCCHINI, Ingredient.BACON, Ingredient.APPLE, Ingredient.BASIL));
@@ -157,18 +160,17 @@ public class IngredientTreeAssistant_ConstructTree_Test {
 		// A....T
 		// .Bas...Z
 		// ->
-		// ...C
-		// .B...T
-		// A.....Z
+		// ...T
+		// .B...Z
+		// A.C...
 
 		final IngredientNode leftIngredientNode = createIngredientNode(Ingredient.BASIL,
-				createIngredientNode(Ingredient.APPLE), (IngredientNode) null);
+				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.CINNAMON));
 
-		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.THYME, (IngredientNode) null,
-				createIngredientNode(Ingredient.ZUCCHINI));
+		final IngredientNode rightIngredientNode = createIngredientNode(Ingredient.ZUCCHINI);
 
 		final IngredientTree expectedTree = IngredientTestUtil
-				.createTree(createIngredientNode(Ingredient.CINNAMON, leftIngredientNode, rightIngredientNode));
+				.createTree(createIngredientNode(Ingredient.THYME, leftIngredientNode, rightIngredientNode));
 
 		final IngredientTree tree = IngredientTreeAssistant.constructIngredientTree(Lists.newArrayList(
 				Ingredient.CINNAMON, Ingredient.THYME, Ingredient.ZUCCHINI, Ingredient.APPLE, Ingredient.BASIL));
