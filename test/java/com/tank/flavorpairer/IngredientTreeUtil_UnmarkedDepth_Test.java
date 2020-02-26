@@ -178,7 +178,7 @@ public class IngredientTreeUtil_UnmarkedDepth_Test {
 		// Tree
 		// .B
 		// A C
-		final IngredientTree tree = IngredientTreeAssistant
+		final IngredientTree tree = IngredientTreeProcessor
 				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLE));
 		final int depth = IngredientTreeUtil.getUnmarkedDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 2, depth);
@@ -287,7 +287,7 @@ public class IngredientTreeUtil_UnmarkedDepth_Test {
 		// Tree
 		// .B
 		// A C
-		final IngredientTree tree = IngredientTreeAssistant
+		final IngredientTree tree = IngredientTreeProcessor
 				.constructIngredientTree(Lists.newArrayList(Ingredient.CINNAMON, Ingredient.BACON, Ingredient.APPLE));
 		final int depth = IngredientTreeUtil.getUnmarkedDepth(tree.getRoot());
 		Assert.assertEquals("depth:not equals", 2, depth);

@@ -9,7 +9,7 @@ import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
 
-public class IngredientTreeAssistant_FindIngredient_Test {
+public class IngredientTreeUtil_FindIngredient_Test {
 	@Test
 	public void testOneElement_Found() {
 		// Tree
@@ -17,7 +17,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientNode appleNode = createIngredientNode(Ingredient.APPLE);
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(appleNode);
 
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.APPLE,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.APPLE,
 				ingredientTree.getRoot());
 
 		Assert.assertEquals(appleNode, ingredientNode);
@@ -29,7 +29,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		// A
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.APPLE));
 
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.ZUCCHINI,
 				ingredientTree.getRoot());
 
 		Assert.assertEquals(null, ingredientNode);
@@ -42,7 +42,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		// A
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(
 				createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE), (IngredientNode) null));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.APPLE,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.APPLE,
 				ingredientTree.getRoot());
 		Assert.assertEquals(createIngredientNode(Ingredient.APPLE), ingredientNode);
 	}
@@ -54,7 +54,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		// A
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(
 				createIngredientNode(Ingredient.BACON, createIngredientNode(Ingredient.APPLE), (IngredientNode) null));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.ZUCCHINI,
 				ingredientTree.getRoot());
 		Assert.assertEquals(null, ingredientNode);
 	}
@@ -66,7 +66,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		// ..C
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
 				(IngredientNode) null, createIngredientNode(Ingredient.CINNAMON)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.CINNAMON,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.CINNAMON,
 				ingredientTree.getRoot());
 		Assert.assertEquals(createIngredientNode(Ingredient.CINNAMON), ingredientNode);
 	}
@@ -78,7 +78,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		// ..C
 		final IngredientTree ingredientTree = IngredientTestUtil.createTree(createIngredientNode(Ingredient.BACON,
 				(IngredientNode) null, createIngredientNode(Ingredient.CINNAMON)));
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.ZUCCHINI,
 				ingredientTree.getRoot());
 		Assert.assertEquals(null, ingredientNode);
 	}
@@ -99,7 +99,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientTree ingredientTree = IngredientTestUtil
 				.createTree(createIngredientNode(Ingredient.BACON, leftIngredientNode, rightIngredientNode));
 
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.ZUCCHINI,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.ZUCCHINI,
 				ingredientTree.getRoot());
 		Assert.assertEquals(createIngredientNode(Ingredient.ZUCCHINI), ingredientNode);
 	}
@@ -120,7 +120,7 @@ public class IngredientTreeAssistant_FindIngredient_Test {
 		final IngredientTree ingredientTree = IngredientTestUtil
 				.createTree(createIngredientNode(Ingredient.BACON, leftIngredientNode, rightIngredientNode));
 
-		final IngredientNode ingredientNode = IngredientTreeAssistant.findIngredient(Ingredient.THYME,
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(Ingredient.THYME,
 				ingredientTree.getRoot());
 		Assert.assertEquals(null, ingredientNode);
 	}

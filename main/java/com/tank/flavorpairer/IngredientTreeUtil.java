@@ -1,14 +1,64 @@
 package com.tank.flavorpairer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
+import com.tank.flavorpairer.object.IngredientTree;
 
+/**
+ * Provides methods for navigating the tree.
+ */
 public class IngredientTreeUtil {
+	/**
+	 * Declared private to prevent initialization.
+	 */
+	private IngredientTreeUtil() {
+	}
+
+	/**
+	 * Creates the given {@link Ingredient}s as {@link IngredientNode}s.
+	 * 
+	 * @param ingredients The List of {@link Ingredient}s to create.
+	 * @return The non-empty List of {@link IngredientNode}s.
+	 * @throws IllegalArgumentException if ingredients is null, empty, or contains
+	 *                                  null.
+	 */
+	public static List<IngredientNode> createIngredients(List<Ingredient> ingredients) {
+		Preconditions.checkArgument(ingredients != null && !ingredients.isEmpty() && !ingredients.contains(null));
+		return ingredients.stream().map(i -> {
+			final IngredientNode node = new IngredientNode(i);
+			node.setPairings(i.getPairings());
+			return node;
+		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Finds the given {@link Ingredient} in the {@link IngredientTree}.
+	 * 
+	 * @param ingredient     The {@link Ingredient} to find.
+	 * @param ingredientTree The {@link IngredientTree} to inspect.
+	 * @return sThe {@link IngredientNode} for the given {@link Ingredient}. Will be
+	 *         null if not found or given {@link IngredientNode} is null.
+	 */
+	public static IngredientNode findIngredient(final Ingredient ingredient, final IngredientNode ingredientNode) {
+		if (ingredient == null || ingredientNode == null) {
+			return null;
+		}
+
+		if (ingredient.equals(ingredientNode.getIngredient())) {
+			return ingredientNode;
+		}
+
+		final IngredientNode leftNode = findIngredient(ingredient, ingredientNode.getLeftNode());
+		return leftNode != null ? leftNode : findIngredient(ingredient, ingredientNode.getRightNode());
+	}
+
 	/**
 	 * Finds the middle node of the {@link IngredientNode}.
 	 * 
@@ -16,7 +66,6 @@ public class IngredientTreeUtil {
 	 * @return The {@link IngredientNode} that is the middle node. Will be null if
 	 *         rootNode is null
 	 */
-	@VisibleForTesting
 	public static IngredientNode findMiddleNode(final IngredientNode rootNode) {
 		if (rootNode == null) {
 			return null;
@@ -82,6 +131,13 @@ public class IngredientTreeUtil {
 		return findClosestUnmarkedNodeFromRoot(rootNode.getRightNode());
 	}
 
+	/**
+	 * Counts the number of children for the given {@link IngredientNode}. Result
+	 * includes the parent node.
+	 * 
+	 * @param ingredientNode The {@link IngredientNode} to inspect.
+	 * @return The positive value of nodes.
+	 */
 	@VisibleForTesting
 	public static int countNumberOfChildren(IngredientNode ingredientNode) {
 		if (ingredientNode == null) {
@@ -97,6 +153,13 @@ public class IngredientTreeUtil {
 		return 1 + sizeOfLeft + sizeOfRight;
 	}
 
+	/**
+	 * Determines the closest unmarked node from the root.
+	 * 
+	 * @param ingredientNode The {@link IngredientNode} to inspect.
+	 * @return The closest {@link IngredientNode}. May be null if no unmarked node
+	 *         exists.
+	 */
 	@VisibleForTesting
 	public static IngredientNode findClosestUnmarkedNodeFromRoot(final IngredientNode ingredientNode) {
 		if ((ingredientNode == null)
@@ -130,6 +193,12 @@ public class IngredientTreeUtil {
 		return findClosestUnmarkedNodeFromRoot(ingredientNode.getRightNode());
 	}
 
+	/**
+	 * Determines the unmarked depth of the given node.
+	 * 
+	 * @param ingredientNode The {@link IngredientNode} to inspect.
+	 * @return The non-negative depth.
+	 */
 	@VisibleForTesting
 	public static int getUnmarkedDepth(IngredientNode ingredientNode) {
 		if (ingredientNode == null || ingredientNode.isVisited()) {
@@ -142,17 +211,24 @@ public class IngredientTreeUtil {
 		return Integer.max(sizeOfLeft, sizeOfRight);
 	}
 
-	private static int getUnmarkedDepth(IngredientNode ingredientNode, int size) {
+	/**
+	 * Determines the unmarked depth of the given node.
+	 * 
+	 * @param ingredientNode The {@link IngredientNode} to inspect.
+	 * @param currentDepth   The current depth.
+	 * @return The non-negative depth.
+	 */
+	private static int getUnmarkedDepth(IngredientNode ingredientNode, int currentDepth) {
 		if (ingredientNode == null) {
-			return size;
+			return currentDepth;
 		}
 
 		if (!ingredientNode.isVisited()) {
-			++size;
+			++currentDepth;
 		}
 
-		final int sizeOfLeft = getUnmarkedDepth(ingredientNode.getLeftNode(), size);
-		final int sizeOfRight = getUnmarkedDepth(ingredientNode.getRightNode(), size);
+		final int sizeOfLeft = getUnmarkedDepth(ingredientNode.getLeftNode(), currentDepth);
+		final int sizeOfRight = getUnmarkedDepth(ingredientNode.getRightNode(), currentDepth);
 		return Integer.max(sizeOfLeft, sizeOfRight);
 	}
 

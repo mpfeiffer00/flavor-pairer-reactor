@@ -4,18 +4,22 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 import com.tank.flavorpairer.object.IngredientTree;
 
 /**
- * Contains assistant methods for {@link IngredientTree}.
+ * Contains methods to process an {@link IngredientTree}.
  */
-public class IngredientTreeAssistant {
-	private IngredientTreeAssistant() {
+public class IngredientTreeProcessor {
+
+	/**
+	 * Declared private to prevent initialization.
+	 */
+	private IngredientTreeProcessor() {
 	}
 
 	/**
@@ -24,40 +28,19 @@ public class IngredientTreeAssistant {
 	 * 
 	 * @param ingredients The List of {@link Ingredient}s to be placed in the tree.
 	 * @return A non-null {@link IngredientTree}.
+	 * @throws IllegalArgumentException if ingredients is null, empty, or contains
+	 *                                  null.
 	 */
-	public static IngredientTree constructIngredientTree(List<Ingredient> ingredients) {
-		if (ingredients == null || ingredients.isEmpty()) {
-			return new IngredientTree();
-		}
+	public static IngredientTree constructIngredientTree(final List<Ingredient> ingredients) {
+		Preconditions.checkArgument(ingredients != null && !ingredients.isEmpty() && !ingredients.contains(null));
 
 		IngredientNode rootIngredientNode = null;
-		for (final IngredientNode ingredientNode : createIngredients(ingredients)) {
+		for (final IngredientNode ingredientNode : IngredientTreeUtil.createIngredients(ingredients)) {
 			rootIngredientNode = addIngredientToTree(rootIngredientNode, ingredientNode);
 		}
 		final IngredientTree ingredientTree = new IngredientTree();
 		ingredientTree.setRoot(rootIngredientNode);
 		return ingredientTree;
-	}
-
-	/**
-	 * Finds the given {@link Ingredient} in the {@link IngredientTree}.
-	 * 
-	 * @param ingredient     The {@link Ingredient} to find.
-	 * @param ingredientTree The {@link IngredientTree} to inspect.
-	 * @return The {@link IngredientNode} for the given {@link Ingredient}. Will be
-	 *         null if not found or given {@link IngredientNode} is null.
-	 */
-	public static IngredientNode findIngredient(Ingredient ingredient, IngredientNode ingredientNode) {
-		if (ingredient == null || ingredientNode == null) {
-			return null;
-		}
-
-		if (ingredient.equals(ingredientNode.getIngredient())) {
-			return ingredientNode;
-		}
-
-		final IngredientNode leftNode = findIngredient(ingredient, ingredientNode.getLeftNode());
-		return leftNode != null ? leftNode : findIngredient(ingredient, ingredientNode.getRightNode());
 	}
 
 	/**
@@ -71,19 +54,21 @@ public class IngredientTreeAssistant {
 	 *         {@link Ingredient} or {@link IngredientNode} is null. Will be empty
 	 *         if no pairings are found.
 	 */
-	public static Set<Ingredient> computeSecondLevelPairings(Ingredient ingredient, IngredientTree ingredientTree) {
+	public static Set<Ingredient> computeSecondLevelPairings(final Ingredient ingredient,
+			final IngredientTree ingredientTree) {
 		if (ingredient == null || ingredientTree == null || ingredientTree.getRoot() == null) {
 			return null;
 		}
 
-		final IngredientNode ingredientNode = findIngredient(ingredient, ingredientTree.getRoot());
+		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(ingredient, ingredientTree.getRoot());
 		if (ingredientNode == null) {
 			return Collections.emptySet();
 		}
 
 		final Set<Ingredient> secondLevelPairings = new HashSet<>();
 		for (final Ingredient pairedIngredient : ingredientNode.getPairings()) {
-			final IngredientNode pairedIngredientNode = findIngredient(pairedIngredient, ingredientTree.getRoot());
+			final IngredientNode pairedIngredientNode = IngredientTreeUtil.findIngredient(pairedIngredient,
+					ingredientTree.getRoot());
 			if (pairedIngredientNode == null) {
 				continue;
 			}
@@ -104,7 +89,8 @@ public class IngredientTreeAssistant {
 	 *         {@link Ingredient} or {@link IngredientNode} is null. Will be empty
 	 *         if no pairings are found.
 	 */
-	public static Set<Ingredient> computeThirdLevelPairings(Ingredient ingredient, IngredientTree ingredientTree) {
+	public static Set<Ingredient> computeThirdLevelPairings(final Ingredient ingredient,
+			final IngredientTree ingredientTree) {
 		if (ingredient == null || ingredientTree == null || ingredientTree.getRoot() == null) {
 			return null;
 		}
@@ -117,7 +103,8 @@ public class IngredientTreeAssistant {
 		final Set<Ingredient> thirdLevelPairings = new HashSet<>();
 		thirdLevelPairings.addAll(secondLevelPairings);
 		for (final Ingredient pairedIngredient : secondLevelPairings) {
-			final IngredientNode pairedNode = findIngredient(pairedIngredient, ingredientTree.getRoot());
+			final IngredientNode pairedNode = IngredientTreeUtil.findIngredient(pairedIngredient,
+					ingredientTree.getRoot());
 			if (pairedNode == null) {
 				System.out.println("null: " + pairedIngredient);
 				continue;
@@ -140,20 +127,16 @@ public class IngredientTreeAssistant {
 	 *                               tree.
 	 * @return The non-null root {@link IngredientNode}.
 	 */
-	private static IngredientNode addIngredientToTree(IngredientNode root, IngredientNode ingredientNodeToInsert) {
+	private static IngredientNode addIngredientToTree(final IngredientNode root,
+			final IngredientNode ingredientNodeToInsert) {
 		if (root == null) {
 			return ingredientNodeToInsert;
 		}
 
 		if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
-			if (root.getLeftNode() == null) {
-				root.setLeftNode(ingredientNodeToInsert);
-			} else {
-				root.setLeftNode(addIngredientToTree(root.getLeftNode(), ingredientNodeToInsert));
-			}
+			root.setLeftNode(addIngredientToTree(root.getLeftNode(), ingredientNodeToInsert));
 
-			if ((IngredientTreeUtil.getDepth(root.getLeftNode())
-					- IngredientTreeUtil.getDepth(root.getRightNode())) > 1) {
+			if (needsRebalancing(root.getLeftNode(), root.getRightNode())) {
 				if (root.getLeftNode().getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) > 0) {
 					return rotateToRight(root);
 				} else {
@@ -161,14 +144,9 @@ public class IngredientTreeAssistant {
 				}
 			}
 		} else if (root.getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
-			if (root.getRightNode() == null) {
-				root.setRightNode(ingredientNodeToInsert);
-			} else {
-				root.setRightNode(addIngredientToTree(root.getRightNode(), ingredientNodeToInsert));
-			}
+			root.setRightNode(addIngredientToTree(root.getRightNode(), ingredientNodeToInsert));
 
-			if ((IngredientTreeUtil.getDepth(root.getRightNode())
-					- IngredientTreeUtil.getDepth(root.getLeftNode())) > 1) {
+			if (needsRebalancing(root.getRightNode(), root.getLeftNode())) {
 				if (root.getRightNode().getName().compareToIgnoreCase(ingredientNodeToInsert.getName()) < 0) {
 					return rotateToLeft(root);
 				} else {
@@ -182,12 +160,30 @@ public class IngredientTreeAssistant {
 	}
 
 	/**
+	 * Determines if the nodes are off balance.
+	 * 
+	 * @param node1 First {@link IngredientNode} to inspect.
+	 * @param node2 Second {@link IngredientNode} to inspect.
+	 * @return True if the tree needs to be rebalanced, false otherwise.
+	 */
+	private static boolean needsRebalancing(final IngredientNode node1, final IngredientNode node2) {
+		return (IngredientTreeUtil.getDepth(node1) - IngredientTreeUtil.getDepth(node2)) > 1;
+	}
+
+	/**
 	 * Rotates the {@link IngredientNode} to the right.
+	 * 
+	 * <pre>
+	 *       P            C2 
+	 *   C2     C5   -> C1     P
+	 * C1  C3 C4  C6        C3   C5
+	 *                          C4 C6
+	 * </pre>
 	 * 
 	 * @param node The {@link IngredientNode} to rotate.
 	 * @return The non-null rotated {@link IngredientNode}.
 	 */
-	private static IngredientNode rotateToRight(IngredientNode node) {
+	private static IngredientNode rotateToRight(final IngredientNode node) {
 		final IngredientNode leftNode = node.getLeftNode();
 		node.setLeftNode(leftNode.getRightNode());
 		leftNode.setRightNode(node);
@@ -197,22 +193,50 @@ public class IngredientTreeAssistant {
 	/**
 	 * Rotates the {@link IngredientNode} to the left.
 	 * 
+	 * <pre>
+	 *       P                C5 
+	 *   C2     C5   ->     P    C6
+	 * C1  C3 C4  C6     C2  C4
+	 *                 C1 C3
+	 * </pre>
+	 * 
 	 * @param node The {@link IngredientNode} to rotate.
 	 * @return The non-null rotated {@link IngredientNode}.
 	 */
-	private static IngredientNode rotateToLeft(IngredientNode node) {
+	private static IngredientNode rotateToLeft(final IngredientNode node) {
 		final IngredientNode rightNode = node.getRightNode();
 		node.setRightNode(rightNode.getLeftNode());
 		rightNode.setLeftNode(node);
 		return rightNode;
 	}
 
-	private static IngredientNode doubleRotateToRight(IngredientNode node) {
+	/**
+	 * Rotates the {@link IngredientNode}'s left node to the left, then the parent
+	 * to the right.
+	 * 
+	 * <pre>
+	 *            8                 
+	 *      4          12       ->   ugh  
+	 *   2    6     10     14  
+	 * 1  3  5 7   9  11  13 15
+	 * </pre>
+	 * 
+	 * @param node The {@link IngredientNode} to rotate.
+	 * @return The non-null rotated {@link IngredientNode}.
+	 */
+	private static IngredientNode doubleRotateToRight(final IngredientNode node) {
 		node.setLeftNode(rotateToLeft(node.getLeftNode()));
 		return rotateToRight(node);
 	}
 
-	private static IngredientNode doubleRotateToLeft(IngredientNode node) {
+	/**
+	 * Rotates the {@link IngredientNode}'s right node to the right, then the parent
+	 * to the left.
+	 * 
+	 * @param node The {@link IngredientNode} to rotate.
+	 * @return The non-null rotated {@link IngredientNode}.
+	 */
+	private static IngredientNode doubleRotateToLeft(final IngredientNode node) {
 		node.setRightNode(rotateToRight(node.getRightNode()));
 		return rotateToLeft(node);
 	}
@@ -224,9 +248,13 @@ public class IngredientTreeAssistant {
 	 * @param ingredient The {@link Ingredient} to delete.
 	 * @return The new {@link IngredientNode} without the given {@link Ingredient}.
 	 *         Will be null if no ingredients remain.
+	 * @throws IllegalArgumentException if root or ingredient are null.
 	 */
-	public static IngredientNode deleteNodeFromTree(IngredientNode root, final Ingredient ingredient) {
+	@VisibleForTesting
+	public static IngredientNode deleteNodeFromTree(final IngredientNode root, final Ingredient ingredient) {
+		Preconditions.checkArgument(root != null);
 		Preconditions.checkArgument(ingredient != null);
+
 		final List<Ingredient> ingredients = IngredientTreeUtil.getIngredients(root);
 		ingredients.remove(ingredient);
 
@@ -235,14 +263,5 @@ public class IngredientTreeAssistant {
 		}
 
 		return constructIngredientTree(ingredients).getRoot();
-	}
-
-	private static List<IngredientNode> createIngredients(List<Ingredient> ingredients) {
-		final List<IngredientNode> nodes = ingredients.stream().map(i -> {
-			final IngredientNode node = new IngredientNode(i);
-			node.setPairings(i.getPairings());
-			return node;
-		}).collect(Collectors.toList());
-		return nodes;
 	}
 }

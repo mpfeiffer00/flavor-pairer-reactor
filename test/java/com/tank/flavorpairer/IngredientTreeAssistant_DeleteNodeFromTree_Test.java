@@ -9,21 +9,21 @@ import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientNode;
 
 public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testNullTree() {
-		IngredientTreeAssistant.deleteNodeFromTree(null, Ingredient.APPLE);
+		IngredientTreeProcessor.deleteNodeFromTree(null, Ingredient.APPLE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullIngredient() {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE);
-		IngredientTreeAssistant.deleteNodeFromTree(rootNode, (Ingredient) null);
+		IngredientTreeProcessor.deleteNodeFromTree(rootNode, (Ingredient) null);
 	}
 
 	@Test
 	public void testIngredientNotFound() {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE);
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.APRICOT);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.APRICOT);
 		Assert.assertEquals(createIngredientNode(Ingredient.APPLE), actualNode);
 	}
 
@@ -32,7 +32,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		// Tree
 		// A*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.APPLE);
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.APPLE);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.APPLE);
 		Assert.assertNull(actualNode);
 	}
 
@@ -43,7 +43,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		// A*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				(IngredientNode) null);
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.APPLE);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.APPLE);
 		IngredientAssertionUtil.containsAllIngredients(createIngredientNode(Ingredient.BASIL), actualNode);
 	}
 
@@ -54,7 +54,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		// ..C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, (IngredientNode) null,
 				createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
 		IngredientAssertionUtil.containsAllIngredients(createIngredientNode(Ingredient.BASIL), actualNode);
 	}
 
@@ -65,7 +65,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		// A*C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.APPLE);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.APPLE);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.BASIL, (IngredientNode) null,
 				createIngredientNode(Ingredient.CINNAMON));
@@ -80,7 +80,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		// A C*
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNode(Ingredient.APPLE), (IngredientNode) null);
@@ -95,7 +95,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		// A*C
 		final IngredientNode rootNode = createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE),
 				createIngredientNode(Ingredient.CINNAMON));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.BASIL);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.BASIL);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.APPLE, (IngredientNode) null,
 				createIngredientNode(Ingredient.CINNAMON));
@@ -112,7 +112,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.BASIL);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.BASIL);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.ZUCCHINI));
@@ -129,7 +129,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.APPLE);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.APPLE);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.ZUCCHINI));
@@ -146,7 +146,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.ZUCCHINI));
@@ -163,7 +163,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL, createIngredientNode(Ingredient.APPLE), (IngredientNode) null),
 				createIngredientNode(Ingredient.ZUCCHINI));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.ZUCCHINI);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.ZUCCHINI);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.BASIL,
 				createIngredientNode(Ingredient.APPLE), createIngredientNode(Ingredient.CINNAMON));
@@ -180,7 +180,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.ZUCCHINI);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.ZUCCHINI);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL));
@@ -197,7 +197,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.FENNEL);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.FENNEL);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.ZUCCHINI));
@@ -214,7 +214,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.FENNEL,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.ZUCCHINI));
@@ -232,7 +232,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
 						createIngredientNode(Ingredient.ZUCCHINI)));
 
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.BASIL);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.BASIL);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.FENNEL,
 				createIngredientNode(Ingredient.CINNAMON), createIngredientNode(Ingredient.ZUCCHINI));
@@ -249,7 +249,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.CORIANDER);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.CORIANDER);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,
@@ -267,7 +267,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.FENNEL);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.FENNEL);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.CORIANDER,
@@ -285,7 +285,7 @@ public class IngredientTreeAssistant_DeleteNodeFromTree_Test {
 		final IngredientNode rootNode = createIngredientNode(Ingredient.CINNAMON,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL,
 						createIngredientNode(Ingredient.CORIANDER), createIngredientNode(Ingredient.ZUCCHINI)));
-		final IngredientNode actualNode = IngredientTreeAssistant.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
+		final IngredientNode actualNode = IngredientTreeProcessor.deleteNodeFromTree(rootNode, Ingredient.CINNAMON);
 
 		final IngredientNode expectedNode = createIngredientNode(Ingredient.CORIANDER,
 				createIngredientNode(Ingredient.BASIL), createIngredientNode(Ingredient.FENNEL, (IngredientNode) null,

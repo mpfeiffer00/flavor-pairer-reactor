@@ -8,7 +8,7 @@ import com.tank.flavorpairer.object.IngredientTree;
 public class FlavorEngine {
 
 	public static void main(String[] args) {
-		final IngredientTree ingredientTree = IngredientTreeAssistant
+		final IngredientTree ingredientTree = IngredientTreeProcessor
 				.constructIngredientTree(Arrays.asList(Ingredient.values()));
 		System.out.println(ingredientTree);
 	}
