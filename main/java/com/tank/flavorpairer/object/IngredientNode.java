@@ -1,5 +1,6 @@
 package com.tank.flavorpairer.object;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -9,10 +10,12 @@ public class IngredientNode {
 	private IngredientNode leftNode;
 	private IngredientNode rightNode;
 	private Set<Ingredient> pairings;
+	private boolean isVisited;
 
 	public IngredientNode(Ingredient ingredient) {
 		this.ingredient = ingredient;
 		this.name = ingredient.getName();
+		this.pairings = ingredient.getPairings();
 	}
 
 	public String getName() {
@@ -48,11 +51,68 @@ public class IngredientNode {
 	}
 
 	public Set<Ingredient> getPairings() {
-		return pairings;
+		return pairings == null ? new HashSet<>() : pairings;
 	}
 
 	public void setPairings(Set<Ingredient> pairings) {
 		this.pairings = pairings;
+	}
+
+	public boolean isVisited() {
+		return isVisited;
+	}
+
+	public void markAsVisited() {
+		this.isVisited = true;
+	}
+
+	public void unmarkAsVisited() {
+		this.isVisited = false;
+	}
+
+	public int size() {
+		final int leftNodeSize = size(leftNode, 0);
+		final int rightNodeSize = size(rightNode, 0);
+
+		// Adding 1 since this node is the root
+		return leftNodeSize + rightNodeSize + 1;
+	}
+
+	public int count() {
+		final int sizeOfLeft = count(this.getLeftNode());
+		final int sizeOfRight = count(this.getRightNode());
+		return 1 + sizeOfLeft + sizeOfRight;
+	}
+
+	private int count(IngredientNode ingredientNode) {
+		if (ingredientNode == null) {
+			return 0;
+		}
+
+		if (ingredientNode.getLeftNode() == null && ingredientNode.getRightNode() == null) {
+			return 1;
+		}
+
+		final int sizeOfLeft = count(ingredientNode.getLeftNode());
+		final int sizeOfRight = count(ingredientNode.getRightNode());
+		return 1 + sizeOfLeft + sizeOfRight;
+	}
+
+	private int size(IngredientNode node, int size) {
+		if (node == null) {
+			return size;
+		}
+
+		if (node.getLeftNode() == null && node.getRightNode() == null) {
+			return 1;
+		}
+
+		size++;
+		final int leftNodeSize = size(node.getLeftNode(), size);
+		final int rightNodeSize = size(node.getRightNode(), size);
+
+		// Adding 1 since this node is the root
+		return leftNodeSize + rightNodeSize;
 	}
 
 	public void print() {
@@ -73,12 +133,12 @@ public class IngredientNode {
 	@Override
 	public String toString() {
 		return "IngredientNode [name=" + name + ", ingredient=" + ingredient + ", leftNode=" + leftNode + ", rightNode="
-				+ rightNode + ", pairings=" + pairings + "]";
+				+ rightNode + ", pairings=" + pairings + ", isVisited=" + isVisited + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ingredient, leftNode, name, pairings, rightNode);
+		return Objects.hash(ingredient, isVisited, leftNode, name, pairings, rightNode);
 	}
 
 	@Override
@@ -93,8 +153,8 @@ public class IngredientNode {
 			return false;
 		}
 		final IngredientNode other = (IngredientNode) obj;
-		return ingredient == other.ingredient && Objects.equals(leftNode, other.leftNode)
-				&& Objects.equals(name, other.name) && Objects.equals(pairings, other.pairings)
-				&& Objects.equals(rightNode, other.rightNode);
+		return ingredient == other.ingredient && isVisited == other.isVisited
+				&& Objects.equals(leftNode, other.leftNode) && Objects.equals(name, other.name)
+				&& Objects.equals(pairings, other.pairings) && Objects.equals(rightNode, other.rightNode);
 	}
 }

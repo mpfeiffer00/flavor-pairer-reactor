@@ -5,6 +5,10 @@ import java.util.Objects;
 public class IngredientTree {
 	private IngredientNode root;
 
+	/**
+	 * @return The root {@link IngredientNode}. Will be null if no ingredients are
+	 *         present.
+	 */
 	public IngredientNode getRoot() {
 		return root;
 	}
