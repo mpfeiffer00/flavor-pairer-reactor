@@ -83,8 +83,9 @@ public class IngredientTreeProcessor {
 				if (secondLevelPairingRanksByIngredient.containsKey(pairing)) {
 					final PairingRank pairingRank = secondLevelPairingRanksByIngredient.get(pairing);
 					pairingRank.setRank(pairingRank.getRank() + 1);
+					// Don't attach the pairing due to the bidirectional mapping that will occur.
 				} else {
-					secondLevelPairingRanksByIngredient.put(pairing, new PairingRank(pairing));
+					secondLevelPairingRanksByIngredient.put(pairing, new PairingRank(pairing, pairing.getPairings()));
 				}
 			}
 		}

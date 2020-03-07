@@ -18,6 +18,7 @@ public class IngredientPairingEngineTest {
 				.containsAll(Ingredient.ZUCCHINI.getPairings()).doesNotContain(Ingredient.BACON);
 	}
 
+	@Test
 	public void testSecondLevelPairings_Zucchini() {
 		final IngredientPairingResponse pairingResponse = computePairings(Ingredient.ZUCCHINI);
 
