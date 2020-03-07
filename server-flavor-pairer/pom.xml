@@ -13,12 +13,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-         <version>2.2.5.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-         <version>2.2.5.RELEASE</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -28,13 +26,58 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+   
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>2.2.5.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
 
    <build>
       <plugins>
          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+               <archive>
+               <manifest>
+                  <addClasspath>false</addClasspath>
+                  <classpathPrefix>lib/</classpathPrefix>
+                  <mainClass>com.tank.server.flavorpairer.FlavorPairerController</mainClass>
+                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+               </manifest>
+               </archive>
+            </configuration>
+         </plugin>
+         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
             <version>2.2.5.RELEASE</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+               <delimiters>
+                  <delimiter>@</delimiter>
+               </delimiters>
+               <useDefaultDelimiters>false</useDefaultDelimiters>
+            </configuration>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
