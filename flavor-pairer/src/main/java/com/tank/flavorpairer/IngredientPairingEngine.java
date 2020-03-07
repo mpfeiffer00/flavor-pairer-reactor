@@ -29,6 +29,10 @@ public class IngredientPairingEngine {
 				IngredientTreeProcessor.computeThirdLevelPairings(ingredientNode.getIngredient(), ingredientTree));
 
 		System.out.println("-------------------");
+		System.out.println("Second Level Pairings: ");
+		response.getSecondLevelIngredientPairingRanks().stream().forEach(System.out::println);
+
+		System.out.println("-------------------");
 		System.out.println("Third Level Pairings: ");
 		// response.getThirdLevelIngredientPairings().stream().forEach(System.out::println);
 
