@@ -1,11 +1,12 @@
 package com.tank.flavorpairer.object;
 
+import java.util.List;
 import java.util.Set;
 
 public class IngredientPairingResponse {
 	private Ingredient ingredient;
 	private Set<Ingredient> firstLevelIngredientPairings;
-	private Set<Ingredient> secondLevelIngredientPairings;
+	private List<PairingRank> secondLevelIngredientPairingRanks;
 	private Set<Ingredient> thirdLevelIngredientPairings;
 
 	public IngredientPairingResponse(Ingredient ingredient) {
@@ -28,12 +29,12 @@ public class IngredientPairingResponse {
 		this.firstLevelIngredientPairings = firstLevelIngredientPairings;
 	}
 
-	public Set<Ingredient> getSecondLevelIngredientPairings() {
-		return secondLevelIngredientPairings;
+	public List<PairingRank> getSecondLevelIngredientPairingRanks() {
+		return secondLevelIngredientPairingRanks;
 	}
 
-	public void setSecondLevelIngredientPairings(Set<Ingredient> secondLevelIngredientPairings) {
-		this.secondLevelIngredientPairings = secondLevelIngredientPairings;
+	public void setSecondLevelIngredientPairingRanks(List<PairingRank> secondLevelIngredientPairingRanks) {
+		this.secondLevelIngredientPairingRanks = secondLevelIngredientPairingRanks;
 	}
 
 	public Set<Ingredient> getThirdLevelIngredientPairings() {
