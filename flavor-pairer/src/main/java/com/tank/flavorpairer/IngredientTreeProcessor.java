@@ -2,10 +2,9 @@ package com.tank.flavorpairer;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -48,19 +47,19 @@ public class IngredientTreeProcessor {
 	}
 
 	/**
-	 * Computes the second level pairings for the given {@link Ingredient} using the
+	 * Computes the pairings for the given {@link Ingredient} contained in the
 	 * {@link IngredientTree}. <br>
 	 * TODO: Add examples.
 	 * 
 	 * @param ingredient     The {@link Ingredient} to construct pairings for.
 	 * @param ingredientTree The {@link IngredientTree} of ingredients to inspect.
-	 * @return The second level pairing List of {@link PairingRank}s sorted by
-	 *         relevance. Will be null if {@link Ingredient} or
-	 *         {@link IngredientNode} is null. Will be empty if no pairings are
-	 *         found.
+	 * @param level          The level or degree of pairings to compute.
+	 * @return The List of {@link PairingRank}s sorted by relevance. Will be null if
+	 *         {@link Ingredient} or {@link IngredientNode} is null. Will be empty
+	 *         if no pairings are found.
 	 */
-	public static List<PairingRank> computeSecondLevelPairings(final Ingredient ingredient,
-			final IngredientTree ingredientTree) {
+	public static List<PairingRank> computeIngredientPairingLevel(final Ingredient ingredient,
+			final IngredientTree ingredientTree, int level) {
 		if (ingredient == null || ingredientTree == null || ingredientTree.getRoot() == null) {
 			return null;
 		}
@@ -70,72 +69,61 @@ public class IngredientTreeProcessor {
 			return Collections.emptyList();
 		}
 
-		final Map<Ingredient, PairingRank> secondLevelPairingRanksByIngredient = new HashMap<>();
-		for (final Ingredient pairedIngredient : ingredientNode.getPairings()) {
-			final IngredientNode pairedIngredientNode = IngredientTreeUtil.findIngredient(pairedIngredient,
+		final List<PairingRank> pairingRanks = ingredientNode.getPairings().stream().map(i -> new PairingRank(i))
+				.collect(Collectors.toList());
+		return computeIngredientPairingLevel(ingredient, ingredientTree, level, pairingRanks);
+	}
+
+	/**
+	 * Computes the pairings for the given {@link Ingredient} contained in the the
+	 * {@link IngredientTree}. <br>
+	 * 
+	 * @param ingredient     The {@link Ingredient} to construct pairings for.
+	 * @param ingredientTree The {@link IngredientTree} of ingredients to inspect.
+	 * @param level          The level or degree of pairings to compute.
+	 * @param pairingRanks   The List of {@link PairingRank}s to be processed.
+	 * @return The List of {@link PairingRank}s sorted by relevance.
+	 */
+	private static List<PairingRank> computeIngredientPairingLevel(final Ingredient ingredient,
+			final IngredientTree ingredientTree, int level, List<PairingRank> pairingRanks) {
+		if (level == 1) {
+			return pairingRanks;
+		}
+
+		final Map<Ingredient, PairingRank> pairingRanksByIngredient = pairingRanks.stream()
+				.collect(Collectors.toMap(PairingRank::getIngredient, Function.identity()));
+		for (final PairingRank pairingRank : pairingRanks) {
+			// Level 1 computations will not contain pairing information, must attach for
+			// level > 1
+			if (pairingRank.getPairings().isEmpty()) {
+				pairingRank.setPairings(pairingRank.getIngredient().getPairings());
+			}
+
+			final IngredientNode pairedIngredientNode = IngredientTreeUtil.findIngredient(pairingRank.getIngredient(),
 					ingredientTree.getRoot());
 			if (pairedIngredientNode == null) {
-				// Hypothetically, the paired Ingredient does not appear elsewhere in the tree.
+				// Hypothetically, the paired Ingredient does not appear in the tree.
 				continue;
 			}
 
 			for (final Ingredient pairing : pairedIngredientNode.getIngredient().getPairings()) {
-				if (secondLevelPairingRanksByIngredient.containsKey(pairing)) {
-					final PairingRank pairingRank = secondLevelPairingRanksByIngredient.get(pairing);
-					pairingRank.setRank(pairingRank.getRank() + 1);
-					// Don't attach the pairing due to the bidirectional mapping that will occur.
+				if (pairingRanksByIngredient.containsKey(pairing)) {
+					final PairingRank existingPairingRank = pairingRanksByIngredient.get(pairing);
+					existingPairingRank.setPairings(pairing.getPairings());
+					// Skip setting rank. Ingredients from previous levels will be counted multiple
+					// times. Must reset.
 				} else {
-					secondLevelPairingRanksByIngredient.put(pairing, new PairingRank(pairing, pairing.getPairings()));
+					pairingRanksByIngredient.put(pairing, new PairingRank(pairing, pairing.getPairings()));
 				}
+
+				pairingRanksByIngredient.get(pairing).setRank((int) pairingRanksByIngredient.values().stream()
+						.filter(rank -> rank.getPairings().contains(pairing)).count());
 			}
 		}
 
-		final List<PairingRank> sortedPairingRanks = secondLevelPairingRanksByIngredient.values().stream()
-				.sorted(Comparator.comparingInt(PairingRank::getRank).reversed()).collect(Collectors.toList());
-		return sortedPairingRanks;
-	}
-
-	/**
-	 * Computes the third level pairings for the given {@link Ingredient} using the
-	 * {@link IngredientTree}. <br>
-	 * TODO: Add examples.
-	 * 
-	 * @param ingredient     The {@link Ingredient} to construct pairings for.
-	 * @param ingredientTree The {@link IngredientTree} of ingredients to inspect.
-	 * @return The third level pairing Set of {@link Ingredient}s. Will be null if
-	 *         {@link Ingredient} or {@link IngredientNode} is null. Will be empty
-	 *         if no pairings are found.
-	 */
-	public static Set<Ingredient> computeThirdLevelPairings(final Ingredient ingredient,
-			final IngredientTree ingredientTree) {
-		if (ingredient == null || ingredientTree == null || ingredientTree.getRoot() == null) {
-			return null;
-		}
-
-//		final Set<Ingredient> secondLevelPairings = computeSecondLevelPairings(ingredient, ingredientTree);
-//		if (secondLevelPairings == null || secondLevelPairings.isEmpty()) {
-//			return Collections.emptySet();
-//		}
-
-		return null;
-
-//		final Set<Ingredient> thirdLevelPairings = new HashSet<>();
-//		thirdLevelPairings.addAll(secondLevelPairings);
-//		for (final Ingredient pairedIngredient : secondLevelPairings) {
-//			final IngredientNode pairedNode = IngredientTreeUtil.findIngredient(pairedIngredient,
-//					ingredientTree.getRoot());
-//			if (pairedNode == null) {
-//				System.out.println("null: " + pairedIngredient);
-//				continue;
-//			}
-//
-//			if (pairedNode.getPairings().contains(ingredient)) {
-//				System.out.println("back to the source: " + pairedNode.getName());
-//			}
-//			thirdLevelPairings.addAll(pairedNode.getPairings());
-//		}
-//
-//		return thirdLevelPairings;
+		return computeIngredientPairingLevel(ingredient, ingredientTree, level - 1,
+				pairingRanksByIngredient.values().stream()
+						.sorted(Comparator.comparingInt(PairingRank::getRank).reversed()).collect(Collectors.toList()));
 	}
 
 	/**
