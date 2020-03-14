@@ -1,1 +1,1 @@
-web: java -jar server-flavor-pairer/target/server-flavor-pairer-1.0-SNAPSHOT.jar
+web: java -jar -Dserver.port=$PORT server-flavor-pairer/target/server-flavor-pairer-1.0-SNAPSHOT.jar
