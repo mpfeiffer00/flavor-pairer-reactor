@@ -75,6 +75,10 @@ public enum Ingredient {
 		return name;
 	}
 
+	public static Ingredient getIngredient(String name) {
+		return ingredientsByName.get(name);
+	}
+
 	public EnumSet<Ingredient> getPairings() {
 		final EnumSet<Ingredient> ingredients = EnumSet.noneOf(Ingredient.class);
 		ingredients.addAll(

@@ -1,5 +1,6 @@
 package com.tank.flavorpairer;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -7,6 +8,7 @@ import org.junit.Test;
 
 import com.tank.flavorpairer.object.Ingredient;
 import com.tank.flavorpairer.object.IngredientPairingResponse;
+import com.tank.flavorpairer.object.IngredientTree;
 import com.tank.flavorpairer.object.PairingRank;
 
 public class IngredientPairingEngineTest {
@@ -25,6 +27,16 @@ public class IngredientPairingEngineTest {
 		Assertions.assertThat(pairingResponse).isNotNull();
 		final List<PairingRank> pairingRanks = pairingResponse.getSecondLevelIngredientPairingRanks();
 		Assertions.assertThat(pairingRanks).isNotEmpty();
+	}
+
+	@Test
+	public void testFirstCopy() {
+		final IngredientTree ingredientTree = IngredientTreeProcessor
+				.constructIngredientTree(Arrays.asList(Ingredient.values()));
+
+		final List<PairingRank> x3LevelPairings = IngredientTreeProcessor
+				.computeIngredientPairingLevel(Ingredient.ZUCCHINI, ingredientTree, 3);
+		// x3LevelPairings.stream().forEach(System.out::println);
 	}
 
 	private static IngredientPairingResponse computePairings(Ingredient ingredient) {

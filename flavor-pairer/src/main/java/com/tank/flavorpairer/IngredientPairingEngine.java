@@ -15,7 +15,6 @@ public class IngredientPairingEngine {
 	}
 
 	public IngredientPairingResponse computePairings(Ingredient ingredient) {
-		ingredientTree.getRoot().print();
 		final IngredientNode ingredientNode = IngredientTreeUtil.findIngredient(ingredient, ingredientTree.getRoot());
 		return ingredientNode == null ? null : buildResponse(ingredientNode);
 	}
@@ -23,19 +22,10 @@ public class IngredientPairingEngine {
 	private IngredientPairingResponse buildResponse(IngredientNode ingredientNode) {
 		final IngredientPairingResponse response = new IngredientPairingResponse(ingredientNode.getIngredient());
 		response.setFirstLevelIngredientPairings(ingredientNode.getPairings());
-		response.setSecondLevelIngredientPairingRanks(
-				IngredientTreeProcessor.computeSecondLevelPairings(ingredientNode.getIngredient(), ingredientTree));
-		response.setThirdLevelIngredientPairings(
-				IngredientTreeProcessor.computeThirdLevelPairings(ingredientNode.getIngredient(), ingredientTree));
-
-		System.out.println("-------------------");
-		System.out.println("Second Level Pairings: ");
-		response.getSecondLevelIngredientPairingRanks().stream().forEach(System.out::println);
-
-		System.out.println("-------------------");
-		System.out.println("Third Level Pairings: ");
-		// response.getThirdLevelIngredientPairings().stream().forEach(System.out::println);
-
+		response.setSecondLevelIngredientPairingRanks(IngredientTreeProcessor
+				.computeIngredientPairingLevel(ingredientNode.getIngredient(), ingredientTree, 2));
+		response.setThirdLevelIngredientPairingRanks(IngredientTreeProcessor
+				.computeIngredientPairingLevel(ingredientNode.getIngredient(), ingredientTree, 3));
 		return response;
 	}
 }

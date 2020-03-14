@@ -7,7 +7,7 @@ public class IngredientPairingResponse {
 	private Ingredient ingredient;
 	private Set<Ingredient> firstLevelIngredientPairings;
 	private List<PairingRank> secondLevelIngredientPairingRanks;
-	private Set<Ingredient> thirdLevelIngredientPairings;
+	private List<PairingRank> thirdLevelIngredientPairingRanks;
 
 	public IngredientPairingResponse(Ingredient ingredient) {
 		this.ingredient = ingredient;
@@ -37,11 +37,11 @@ public class IngredientPairingResponse {
 		this.secondLevelIngredientPairingRanks = secondLevelIngredientPairingRanks;
 	}
 
-	public Set<Ingredient> getThirdLevelIngredientPairings() {
-		return thirdLevelIngredientPairings;
+	public List<PairingRank> getThirdLevelIngredientPairingRanks() {
+		return thirdLevelIngredientPairingRanks;
 	}
 
-	public void setThirdLevelIngredientPairings(Set<Ingredient> thirdLevelIngredientPairings) {
-		this.thirdLevelIngredientPairings = thirdLevelIngredientPairings;
+	public void setThirdLevelIngredientPairingRanks(List<PairingRank> thirdLevelIngredientPairingRanks) {
+		this.thirdLevelIngredientPairingRanks = thirdLevelIngredientPairingRanks;
 	}
 }
