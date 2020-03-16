@@ -4,12 +4,15 @@ Many sites discuss what ingredients go with what, but they are the traditional a
 
 For example: Zucchini
 Typically first-level pairings:
+
 `Basil, goat cheese, mozzarella cheese, chives, coriander, dill, garlic, olive oil, thyme, eggplant`
 
 What pairs with each of these ingredients? Second-level pairings:
+
 `Allspice, apples, bacon, fennel, mushrooms, nutmeg, pears, pork, tarragon`
 
 We must go deeper. Third-level ingredients:
+
 `Anise hyssop, bok choy, couscous, madeira, mint, rosemary, salmon, sea bass, white sesame seeds, veal`
 
 Now we can start becoming a bit more creative and stop approaching a plate so one dimensional.
@@ -23,6 +26,7 @@ The site doesn't work yet, but you know, that is coming along. The core backbone
 
 # Installing
 The project is mavenized, run the below to install.
+
 `mvn clean install`
 
 # Running the Tests
@@ -32,6 +36,8 @@ They are junits. Just run them.
 Currently set up for Heroku. 
 
 # Local Deployment
-Install the Heroku CLI. After a `mvn clean install`, in the CLI run:
-`heroku local web`
-It should bind to localhost:8080
+Install the Heroku CLI. Install the jar locally and start heroku with the below commands. It should bind to localhost:8080.
+
+`mvn clean install`
+
+`heroku local web -f Procfile.local`
