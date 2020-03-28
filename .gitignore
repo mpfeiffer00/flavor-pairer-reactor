@@ -12,3 +12,12 @@ local.properties
 target\
 .project
 .classpath
+
+bower_components
+node_modules
+node
+*.log
+asciidoctor.css
+built
+dump.rdb
+package-lock.json

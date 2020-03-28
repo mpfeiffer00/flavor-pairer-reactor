@@ -24,7 +24,8 @@
 	   <groupId>org.assertj</groupId>
 	   <artifactId>assertj-core</artifactId>
 	   <version>3.11.1</version>
-	   <scope>compile</scope>
+      <!--  need to fix. should be test. -->
+	   <scope>compile</scope> 
 	</dependency>
 	<dependency>
 	  <groupId>org.apache.pdfbox</groupId>

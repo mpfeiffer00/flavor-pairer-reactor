@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Ingredient {
@@ -71,12 +72,16 @@ public enum Ingredient {
 		this.pairings = pairings;
 	}
 
+	public static Set<String> getIngredientNames() {
+		return ingredientsByName.keySet();
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public static Ingredient getIngredient(String name) {
-		return ingredientsByName.get(name);
+		return ingredientsByName.get(name.toLowerCase());
 	}
 
 	public EnumSet<Ingredient> getPairings() {
