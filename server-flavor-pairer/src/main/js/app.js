@@ -26,11 +26,11 @@ class App extends React.Component {
 class IngredientList extends React.Component{
    render() {  
       return (
-         <ul>
+         <select>
            {this.props.ingredients.map(ingredient =>
-             <li key={ingredient.toString()}>{ingredient}</li>
+             <option value={ingredient} key={ingredient.toString()}>{ingredient}</option>
            )}
-         </ul>
+         </select>
       )
    }
 }
