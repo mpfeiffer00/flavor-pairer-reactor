@@ -3,7 +3,8 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-// https://reactjs.org/docs/forms.html
+import IngredientPairingComponent from './api/IngredientPairingComponent';
+
 class NameForm extends React.Component {
    constructor(props) {
       super(props);
@@ -13,23 +14,27 @@ class NameForm extends React.Component {
    }
 
    handleChange(event) {
+     // TODO: add search here
      this.setState({value: event.target.value});
    }
 
    handleSubmit(event) {
-     alert('A name was submitted: ' + this.state.value);
+     this.setState({value: event.target.value});
+     //alert('A name was submitted: ' + this.state.value);
      event.preventDefault();
    }
 
    render() {
      return (
-       <form onSubmit={this.handleSubmit}>
-         <label>
-           Name:
-           <input type="text" value={this.state.value} onChange={this.handleChange} />
-         </label>
-         <input type="submit" value="Submit" />
-       </form>
+       <div>
+         <form>
+           <label>
+             Enter Ingredient:
+             <input type="text" value={this.state.value} onChange={this.handleChange} />
+           </label>
+         </form>
+         <IngredientPairingComponent ingredient={this.state.value}/>
+       </div>
      );
    }
 }
