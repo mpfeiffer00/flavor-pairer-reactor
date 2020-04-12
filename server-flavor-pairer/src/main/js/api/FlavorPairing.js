@@ -6,27 +6,41 @@ class FlavorPairing extends Component {
    constructor(props) {
       super(props);
    }
+   
+   isArrayPopulated(array) {
+     return Boolean(Array.isArray(array) && array.length);
+   }
 
    render() {
-     let firstShit = <p>first shit empty</p>;
-     if (this.props.flavor.firstLevelIngredientPairings)
+     let foundFirstLevelIngredientPairings = this.isArrayPopulated(this.props.flavor.firstLevelIngredientPairings);
+     let foundSecondLevelIngredientPairings = this.isArrayPopulated(this.props.flavor.secondLevelIngredientPairingRanks);
+     let foundThirdLevelIngredientPairings = this.isArrayPopulated(this.props.flavor.secondLevelIngredientPairingRanks);
+
+     if (!(foundFirstLevelIngredientPairings && foundSecondLevelIngredientPairings && foundThirdLevelIngredientPairings)) {
+      return (
+        <div>
+          <p>No Ingredient Pairings Found</p>
+        </div> 
+      )
+    }
+   
+     let firstLevelDisplay = <p>No First Level Ingredient Pairings Found</p>;
+     if (foundFirstLevelIngredientPairings)
      {
-       firstShit = (
+       firstLevelDisplay = (
           <div>
             <h3>First Level Ingredient Pairings:</h3>
             <ul>
-              {this.props.flavor.firstLevelIngredientPairings.map(v => 
-                <li key={v.toString()}>{v}</li>
-              )}
+              {this.props.flavor.firstLevelIngredientPairings.map(v => <li key={v.toString()}>{v}</li> )}
             </ul>
           </div>       
        );
      }
      
-     let secondShit = <p>second shit empty</p>;
-     if (this.props.flavor.secondLevelIngredientPairingRanks)
+     let secondLevelDisplay = <p>No Second Level Ingredient Pairings Found</p>;
+     if (foundSecondLevelIngredientPairings)
      {
-          secondShit = (
+          secondLevelDisplay = (
             <div>
               <h3>Second Level Ingredient Pairings:</h3>
               <IngredientPairingRank flavor={this.props.flavor.secondLevelIngredientPairingRanks} />
@@ -34,10 +48,10 @@ class FlavorPairing extends Component {
           );
      }
 
-     let thirdShit = <p>third shit empty</p>;
-     if (this.props.flavor.thirdLevelIngredientPairingRanks)
+     let thirdLevelDisplay = <p>No Third Level Ingredient Pairings Found</p>;
+     if (foundThirdLevelIngredientPairings)
      {
-          thirdShit = (
+          thirdLevelDisplay = (
             <div>
               <h3>Third Level Ingredient Pairings:</h3>
               <IngredientPairingRank flavor={this.props.flavor.thirdLevelIngredientPairingRanks} />
@@ -48,11 +62,9 @@ class FlavorPairing extends Component {
    
       return (
         <div>
-          {firstShit}
-          
-          {secondShit}
-          
-          {thirdShit}
+          {firstLevelDisplay}
+          {secondLevelDisplay}
+          {thirdLevelDisplay}
         </div>     
       )
    }
