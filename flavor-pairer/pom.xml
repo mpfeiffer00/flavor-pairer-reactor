@@ -9,6 +9,18 @@
   <packaging>jar</packaging>
   
   <dependencies>
+   <dependency>
+     <groupId>com.itextpdf</groupId>
+     <artifactId>layout</artifactId>
+     <version>7.1.9</version>
+     <scope>compile</scope>
+   </dependency>
+   <dependency>
+     <groupId>com.itextpdf</groupId>
+     <artifactId>kernel</artifactId>
+     <version>7.1.9</version>
+     <scope>compile</scope>
+   </dependency>
 	<dependency>
 	  <groupId>com.google.guava</groupId>
 	  <artifactId>guava</artifactId>
@@ -48,4 +60,19 @@
 	  </plugin>
 	</plugins>
 	</build>
+
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>itext-releases</id>
+      <name>iText Repository - releases</name>
+      <url>https://repo.itextsupport.com/releases</url>
+    </repository>
+  </repositories>   
+
 </project>
