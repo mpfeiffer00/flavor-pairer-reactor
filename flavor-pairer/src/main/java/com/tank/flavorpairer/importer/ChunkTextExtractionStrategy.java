@@ -1,16 +1,25 @@
 package com.tank.flavorpairer.importer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 import com.itextpdf.kernel.geom.LineSegment;
 import com.itextpdf.kernel.geom.Vector;
 import com.itextpdf.kernel.pdf.canvas.parser.EventType;
 import com.itextpdf.kernel.pdf.canvas.parser.data.IEventData;
 import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
+import com.tank.flavorpairer.importer.util.RenderInfoTextAssistant;
 
 public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private Vector lastStart;
 	private Vector lastEnd;
 	private final StringBuilder result = new StringBuilder();
+	private final List<FlavorBibleIngredient> flavorBibleIngredients = new ArrayList<>();
+	private boolean isHeading = false;
 
 	@Override
 	public void eventOccurred(IEventData data, EventType type) {
@@ -18,6 +27,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			final TextRenderInfo renderInfo = (TextRenderInfo) data;
 			final boolean firstRender = result.length() == 0;
 			boolean hardReturn = false;
+			isHeading = RenderInfoTextAssistant.isHeading(renderInfo);
 
 			final LineSegment segment = renderInfo.getBaseline();
 			final Vector start = segment.getStartPoint();
@@ -71,16 +81,36 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			lastStart = start;
 			lastEnd = end;
 		}
+
+		if (type.equals(EventType.END_TEXT) && !getResultantText().isBlank()) {
+			if (isHeading) {
+				System.out.println("ET Heading: " + getResultantText());
+			} else {
+				System.out.println("ET Ingredient: " + getResultantText());
+			}
+
+			result.replace(0, result.length(), "");
+			isHeading = false;
+		}
 	}
 
 	/**
-	 * Returns the result so far.
+	 * Returns the result of the chunk in process.
 	 * 
-	 * @return a String with the resulting text.
+	 * @return a String with the current chunk.
 	 */
 	@Override
 	public String getResultantText() {
 		return result.toString();
+	}
+
+	public List<FlavorBibleIngredient> getFlavorBibleIngredients() {
+		return flavorBibleIngredients;
+	}
+
+	@Override
+	public Set<EventType> getSupportedEvents() {
+		return Collections.unmodifiableSet(Sets.newHashSet(EventType.RENDER_TEXT, EventType.END_TEXT));
 	}
 
 	/**

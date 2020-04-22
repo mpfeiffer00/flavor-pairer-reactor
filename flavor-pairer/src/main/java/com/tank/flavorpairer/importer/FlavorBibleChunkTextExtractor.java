@@ -16,7 +16,7 @@ import com.itextpdf.kernel.pdf.canvas.parser.listener.FilteredEventListener;
 
 // https://github.com/itext/itext7
 // https://itextpdf.com/en/resources/examples/itext-7/parsing-pdfs
-public class FlavorBibleSimpleTextExtractor {
+public class FlavorBibleChunkTextExtractor {
 	public static final String DEST = "./target/txt/the_flavor_bible.txt";
 	public static final String SRC = "./target/txt/the_flavor_bible.pdf";
 
@@ -24,7 +24,7 @@ public class FlavorBibleSimpleTextExtractor {
 		final File file = new File(DEST);
 		file.getParentFile().mkdirs();
 
-		new FlavorBibleSimpleTextExtractor().manipulatePdfOriginal(DEST);
+		new FlavorBibleChunkTextExtractor().manipulatePdfOriginal(DEST);
 	}
 
 	public void manipulatePdfOriginal(String dest) throws IOException {
@@ -35,7 +35,7 @@ public class FlavorBibleSimpleTextExtractor {
 		final FilteredEventListener listener = new FilteredEventListener();
 
 		final ChunkTextExtractionStrategy extractionStrategy = listener
-				.attachEventListener(new ChunkTextExtractionStrategy(), new CustomFilter(rect));
+				.attachEventListener(new ChunkTextExtractionStrategy(), new IngredientFilter(rect));
 
 		// Ingredients: 76-1163
 		final PdfCanvasProcessor parser = new PdfCanvasProcessor(listener);
@@ -45,15 +45,15 @@ public class FlavorBibleSimpleTextExtractor {
 
 		pdfDoc.close();
 
-		System.out.println(actualText);
+		// System.out.println(actualText);
 
 //		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dest)))) {
 //			writer.write(actualText);
 //		}
 	}
 
-	private static final class CustomFilter extends TextRegionEventFilter {
-		public CustomFilter(Rectangle filterRect) {
+	private static final class IngredientHeadingFilter extends TextRegionEventFilter {
+		public IngredientHeadingFilter(Rectangle filterRect) {
 			super(filterRect);
 		}
 
@@ -70,8 +70,38 @@ public class FlavorBibleSimpleTextExtractor {
 			}
 
 			final String fontName = font.getFontProgram().getFontNames().getFontName();
-			final boolean isBold = fontName.endsWith("Bold");
-			if (!isBold) {
+			final boolean isHeading = fontName.endsWith("Bold") && renderInfo.getFontSize() == 28.0;
+			if (!isHeading) {
+				return false;
+			}
+
+			return true;
+		}
+	}
+
+	private static final class IngredientFilter extends TextRegionEventFilter {
+		public IngredientFilter(Rectangle filterRect) {
+			super(filterRect);
+		}
+
+		@Override
+		public boolean accept(IEventData data, EventType type) {
+			if (type.equals(EventType.END_TEXT)) {
+				return true;
+			}
+
+			if (!type.equals(EventType.RENDER_TEXT)) {
+				return false;
+			}
+
+			final TextRenderInfo renderInfo = (TextRenderInfo) data;
+			final PdfFont font = renderInfo.getFont();
+			if (font == null) {
+				return false;
+			}
+
+			final boolean isNormalText = renderInfo.getFontSize() == 20.0;
+			if (!isNormalText) {
 				return false;
 			}
 
