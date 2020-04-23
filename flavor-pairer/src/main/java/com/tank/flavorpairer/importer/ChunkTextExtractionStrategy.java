@@ -21,8 +21,11 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private final StringBuilder result = new StringBuilder();
 	private final List<FlavorBibleIngredient> flavorBibleIngredients = new ArrayList<>();
 	private final Set<FlavorBibleIngredient> ingredientPairings = new HashSet<>();
-	private FlavorBibleIngredient currentFlavorBibleIngredient = null;
+	private final FlavorBibleIngredient currentFlavorBibleIngredient = null;
+	private FlavorBibleIngredient currentFlavorBibleIngredientHeading = null;
+
 	private boolean isHeading = false;
+	private boolean isFlavorAffinityEntries = false;
 	private PairingLevel pairingLevel = PairingLevel.NORMAL;
 
 	@Override
@@ -89,21 +92,22 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 
 		if (type.equals(EventType.END_TEXT) && !getResultantText().isBlank()) {
 			if (isHeading) {
-				// We close the previous ingredients for the Heading, and create anew.
-				// First heading of file
-				if (currentFlavorBibleIngredient != null) {
-					currentFlavorBibleIngredient.add(ingredientPairings);
-					flavorBibleIngredients.add(currentFlavorBibleIngredient);
+				// First heading of file will not have any paired ingredients, can only add at
+				// end of heading resolution
+				if (currentFlavorBibleIngredientHeading != null) {
+					currentFlavorBibleIngredientHeading.addFlavorBibleIngredient(ingredientPairings);
+					flavorBibleIngredients.add(currentFlavorBibleIngredientHeading);
 				}
 
-				// System.out.println("ET Heading: " + getResultantText());
-
-				currentFlavorBibleIngredient = new FlavorBibleIngredient();
-				currentFlavorBibleIngredient.setIngredientName(getResultantText());
+				currentFlavorBibleIngredientHeading = new FlavorBibleIngredient();
+				currentFlavorBibleIngredientHeading.setIngredientName(getResultantText());
 				ingredientPairings.clear();
+				isFlavorAffinityEntries = false;
+			} else if ("Flavor Affinities".equals(getResultantText())) {
+				isFlavorAffinityEntries = true;
+			} else if (isFlavorAffinityEntries) {
+				currentFlavorBibleIngredientHeading.addFlavorAffinity(getResultantText());
 			} else {
-				// System.out.println("ET Ingredient: " + getResultantText());
-
 				final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
 				ingredient.setIngredientName(getResultantText());
 				ingredient.setPairingLevel(pairingLevel);
@@ -114,8 +118,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			isHeading = false;
 		}
 
-		// TODO: WE ARE GOING TO LOSE THE LAST HEADING BECAUSE WE DIDN'T FIND THE NEXT
-		// ONE
+		// TODO: GOING TO LOSE THE LAST HEADING BECAUSE WE DIDN'T FIND THE NEXT ONE
 	}
 
 	/**

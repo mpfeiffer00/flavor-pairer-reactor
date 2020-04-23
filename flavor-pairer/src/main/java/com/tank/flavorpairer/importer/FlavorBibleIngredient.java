@@ -7,6 +7,7 @@ public class FlavorBibleIngredient {
 	private String ingredientName;
 	private final Set<FlavorBibleIngredient> ingredients = new HashSet<>();
 	private PairingLevel pairingLevel;
+	private final Set<String> flavorAffinities = new HashSet<>();
 
 	// private Set<FlavorBibleIngredient> affinities;
 	public String getIngredientName() {
@@ -21,11 +22,11 @@ public class FlavorBibleIngredient {
 		return ingredients;
 	}
 
-	public void add(FlavorBibleIngredient ingredient) {
+	public void addFlavorBibleIngredient(FlavorBibleIngredient ingredient) {
 		this.ingredients.add(ingredient);
 	}
 
-	public void add(Set<FlavorBibleIngredient> ingredientPairings) {
+	public void addFlavorBibleIngredient(Set<FlavorBibleIngredient> ingredientPairings) {
 		this.ingredients.addAll(ingredientPairings);
 	}
 
@@ -37,9 +38,21 @@ public class FlavorBibleIngredient {
 		this.pairingLevel = pairingLevel;
 	}
 
+	public void addFlavorAffinity(String flavorAffinity) {
+		flavorAffinities.add(flavorAffinity);
+	}
+
+	public void addFlavorAffinities(Set<String> flavorAffinities) {
+		this.flavorAffinities.addAll(flavorAffinities);
+	}
+
+	public Set<String> getFlavorAffinities() {
+		return flavorAffinities;
+	}
+
 	@Override
 	public String toString() {
 		return "FlavorBibleIngredient [ingredientName=" + ingredientName + ", ingredients=" + ingredients
-				+ ", pairingLevel=" + pairingLevel + "]";
+				+ ", pairingLevel=" + pairingLevel + ", flavorAffinities=" + flavorAffinities + "]";
 	}
 }
