@@ -25,11 +25,21 @@ public class FlavorBibleIngredient {
 		this.ingredients.add(ingredient);
 	}
 
+	public void add(Set<FlavorBibleIngredient> ingredientPairings) {
+		this.ingredients.addAll(ingredientPairings);
+	}
+
 	public PairingLevel getPairingLevel() {
 		return pairingLevel;
 	}
 
 	public void setPairingLevel(PairingLevel pairingLevel) {
 		this.pairingLevel = pairingLevel;
+	}
+
+	@Override
+	public String toString() {
+		return "FlavorBibleIngredient [ingredientName=" + ingredientName + ", ingredients=" + ingredients
+				+ ", pairingLevel=" + pairingLevel + "]";
 	}
 }

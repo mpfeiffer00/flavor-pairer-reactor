@@ -2,6 +2,7 @@ package com.tank.flavorpairer.importer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.geom.Rectangle;
@@ -35,17 +36,17 @@ public class FlavorBibleChunkTextExtractor {
 		final FilteredEventListener listener = new FilteredEventListener();
 
 		final ChunkTextExtractionStrategy extractionStrategy = listener
-				.attachEventListener(new ChunkTextExtractionStrategy(), new IngredientFilter(rect));
+				.attachEventListener(new ChunkTextExtractionStrategy());
 
 		// Ingredients: 76-1163
 		final PdfCanvasProcessor parser = new PdfCanvasProcessor(listener);
 		parser.processPageContent(pdfDoc.getPage(76));
 
-		final String actualText = extractionStrategy.getResultantText();
+		final List<FlavorBibleIngredient> flavorBibleIngredients = extractionStrategy.getFlavorBibleIngredients();
 
 		pdfDoc.close();
 
-		// System.out.println(actualText);
+		flavorBibleIngredients.forEach(System.out::println);
 
 //		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dest)))) {
 //			writer.write(actualText);
@@ -59,6 +60,10 @@ public class FlavorBibleChunkTextExtractor {
 
 		@Override
 		public boolean accept(IEventData data, EventType type) {
+			if (type.equals(EventType.END_TEXT)) {
+				return true;
+			}
+
 			if (!type.equals(EventType.RENDER_TEXT)) {
 				return false;
 			}

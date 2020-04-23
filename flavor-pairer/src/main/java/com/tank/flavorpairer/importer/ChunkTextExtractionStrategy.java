@@ -2,6 +2,7 @@ package com.tank.flavorpairer.importer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,10 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private Vector lastEnd;
 	private final StringBuilder result = new StringBuilder();
 	private final List<FlavorBibleIngredient> flavorBibleIngredients = new ArrayList<>();
+	private final Set<FlavorBibleIngredient> ingredientPairings = new HashSet<>();
+	private FlavorBibleIngredient currentFlavorBibleIngredient = null;
 	private boolean isHeading = false;
+	private PairingLevel pairingLevel = PairingLevel.NORMAL;
 
 	@Override
 	public void eventOccurred(IEventData data, EventType type) {
@@ -28,6 +32,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			final boolean firstRender = result.length() == 0;
 			boolean hardReturn = false;
 			isHeading = RenderInfoTextAssistant.isHeading(renderInfo);
+			pairingLevel = RenderInfoTextAssistant.determinePairingLevel(renderInfo);
 
 			final LineSegment segment = renderInfo.getBaseline();
 			final Vector start = segment.getStartPoint();
@@ -84,14 +89,33 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 
 		if (type.equals(EventType.END_TEXT) && !getResultantText().isBlank()) {
 			if (isHeading) {
-				System.out.println("ET Heading: " + getResultantText());
+				// We close the previous ingredients for the Heading, and create anew.
+				// First heading of file
+				if (currentFlavorBibleIngredient != null) {
+					currentFlavorBibleIngredient.add(ingredientPairings);
+					flavorBibleIngredients.add(currentFlavorBibleIngredient);
+				}
+
+				// System.out.println("ET Heading: " + getResultantText());
+
+				currentFlavorBibleIngredient = new FlavorBibleIngredient();
+				currentFlavorBibleIngredient.setIngredientName(getResultantText());
+				ingredientPairings.clear();
 			} else {
-				System.out.println("ET Ingredient: " + getResultantText());
+				// System.out.println("ET Ingredient: " + getResultantText());
+
+				final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
+				ingredient.setIngredientName(getResultantText());
+				ingredient.setPairingLevel(pairingLevel);
+				ingredientPairings.add(ingredient);
 			}
 
 			result.replace(0, result.length(), "");
 			isHeading = false;
 		}
+
+		// TODO: WE ARE GOING TO LOSE THE LAST HEADING BECAUSE WE DIDN'T FIND THE NEXT
+		// ONE
 	}
 
 	/**
@@ -101,7 +125,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	 */
 	@Override
 	public String getResultantText() {
-		return result.toString();
+		return result.toString().replaceAll("\\s", " ");
 	}
 
 	public List<FlavorBibleIngredient> getFlavorBibleIngredients() {
