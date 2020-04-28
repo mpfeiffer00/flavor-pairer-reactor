@@ -2,9 +2,10 @@ package com.tank.flavorpairer.importer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.collect.Sets;
 import com.itextpdf.kernel.geom.LineSegment;
@@ -20,12 +21,13 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private Vector lastEnd;
 	private final StringBuilder result = new StringBuilder();
 	private final List<FlavorBibleIngredient> flavorBibleIngredients = new ArrayList<>();
-	private final Set<FlavorBibleIngredient> ingredientPairings = new HashSet<>();
-	private final FlavorBibleIngredient currentFlavorBibleIngredient = null;
+	private final List<FlavorBibleIngredient> ingredientPairings = new ArrayList<>();
 	private FlavorBibleIngredient currentFlavorBibleIngredientHeading = null;
 
 	private boolean isHeading = false;
 	private boolean isFlavorAffinityEntries = false;
+	private String previousAttribute = "";
+	private final boolean isQuote = false;
 	private PairingLevel pairingLevel = PairingLevel.NORMAL;
 
 	@Override
@@ -90,12 +92,24 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			lastEnd = end;
 		}
 
+		if (currentFlavorBibleIngredientHeading == null) {
+			if (!getResultantText().startsWith("A")) {
+				result.replace(0, result.length(), "");
+				return;
+			}
+
+			if (type.equals(EventType.END_TEXT) && !getResultantText().equals("ALLSPICE")) {
+				result.replace(0, result.length(), "");
+				return;
+			}
+		}
+
 		if (type.equals(EventType.END_TEXT) && !getResultantText().isBlank()) {
 			if (isHeading) {
 				// First heading of file will not have any paired ingredients, can only add at
 				// end of heading resolution
 				if (currentFlavorBibleIngredientHeading != null) {
-					currentFlavorBibleIngredientHeading.addFlavorBibleIngredient(ingredientPairings);
+					currentFlavorBibleIngredientHeading.addFlavorBibleIngredient(Sets.newHashSet(ingredientPairings));
 					flavorBibleIngredients.add(currentFlavorBibleIngredientHeading);
 				}
 
@@ -103,10 +117,77 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				currentFlavorBibleIngredientHeading.setIngredientName(getResultantText());
 				ingredientPairings.clear();
 				isFlavorAffinityEntries = false;
+			} else if (!previousAttribute.isBlank()) {
+				// The season/taste/weight/volume/tips have return before the text. See ALLSPICE
+				// for example
+				switch (previousAttribute) {
+				case "Season:":
+					currentFlavorBibleIngredientHeading.setSeason(getResultantText());
+					break;
+				case "Taste:":
+					currentFlavorBibleIngredientHeading.setTaste(getResultantText());
+					break;
+				case "Weight:":
+					currentFlavorBibleIngredientHeading.setWeight(getResultantText());
+					break;
+				case "Volume:":
+					currentFlavorBibleIngredientHeading.setVolume(getResultantText());
+					break;
+				case "Tips:":
+					currentFlavorBibleIngredientHeading.setTips(getResultantText());
+					break;
+				default:
+					System.out.println("wut: " + previousAttribute);
+				}
+				previousAttribute = "";
+			} else if (getResultantText().startsWith("Season") || getResultantText().startsWith("Taste")
+					|| getResultantText().startsWith("Weight") || getResultantText().startsWith("Volume")
+					|| getResultantText().startsWith("Tips")) {
+				previousAttribute = getResultantText();
 			} else if ("Flavor Affinities".equals(getResultantText())) {
 				isFlavorAffinityEntries = true;
 			} else if (isFlavorAffinityEntries) {
 				currentFlavorBibleIngredientHeading.addFlavorAffinity(getResultantText());
+			} else if (getResultantText().contains("esp.")) {
+				// Ugh. "esp." is sometimes on a new line, sometimes not. Trying to detect if it
+				// is a newline if "esp" is at beginning of text
+				if (getResultantText().replaceFirst(",", "").trim().startsWith("esp.")) {
+					final Set<String> especiallies = Stream
+							.of(getResultantText().replaceFirst(", esp.", "").trim().split(","))
+							.collect(Collectors.toSet());
+					ingredientPairings.get(ingredientPairings.size() - 1)
+							.setEspecially(especiallies.stream().map(x -> x.trim()).collect(Collectors.toSet()));
+				} else {
+					final String[] especiallies = getResultantText().replaceFirst("esp.", "").split(",");
+					final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
+					ingredient.setIngredientName(especiallies[0].trim());
+					ingredient.setPairingLevel(pairingLevel);
+					ingredient.setEspecially(Stream.of(especiallies[1]).map(x -> x.trim()).collect(Collectors.toSet()));
+					ingredientPairings.add(ingredient);
+				}
+			} else if (getResultantText().contains("e.g.")) {
+				final String[] splitLine = getResultantText().replaceFirst(",", "").trim().replace("(", "")
+						.replace(")", "").split("e.g.");
+				final Set<String> examples = Stream.of(splitLine[1].split(",")).map(x -> x.trim())
+						.filter(x -> !x.isBlank()).collect(Collectors.toSet());
+
+				final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
+				ingredient.setExamples(examples);
+				ingredient.setIngredientName(splitLine[0].trim());
+				ingredient.setPairingLevel(pairingLevel);
+				ingredientPairings.add(ingredient);
+			} else if (getResultantText().contains("See")) {
+				final String[] splitLine = getResultantText().replaceFirst("See", "").replaceFirst("also", "")
+						.replace("(", "").replace(")", "").split(",");
+				final Set<String> similarities = Stream.of(splitLine).map(x -> x.trim()).filter(x -> !x.isBlank())
+						.collect(Collectors.toSet());
+				currentFlavorBibleIngredientHeading.setSimilarities(similarities);
+			} else if (getResultantText().trim().startsWith(",")) {
+				// Qualifies on the case "rice, basmati", except with the new line misformat.
+				// Treat it as "esp."
+				final String[] splitLine = getResultantText().split(",");
+				ingredientPairings.get(ingredientPairings.size() - 1)
+						.setEspecially(Stream.of(splitLine[1]).map(x -> x.trim()).collect(Collectors.toSet()));
 			} else {
 				final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
 				ingredient.setIngredientName(getResultantText());

@@ -8,6 +8,9 @@ public class RenderInfoTextAssistant {
 
 	public static PairingLevel determinePairingLevel(TextRenderInfo renderInfo) {
 		if (isBold(renderInfo)) {
+			if (isAllCapitalized(renderInfo)) {
+				return PairingLevel.MARRIAGE;
+			}
 			return PairingLevel.RECOMMENDED;
 		}
 		return PairingLevel.NORMAL;
@@ -39,5 +42,10 @@ public class RenderInfoTextAssistant {
 
 		final String fontName = font.getFontProgram().getFontNames().getFontName();
 		return fontName.endsWith("Bold");
+	}
+
+	private static boolean isAllCapitalized(TextRenderInfo renderInfo) {
+		return renderInfo.getText().equals(renderInfo.getText().toUpperCase())
+				&& Character.isAlphabetic(renderInfo.getText().charAt(0));
 	}
 }

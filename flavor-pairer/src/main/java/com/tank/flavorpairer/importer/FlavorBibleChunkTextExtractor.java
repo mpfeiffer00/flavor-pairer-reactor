@@ -40,7 +40,10 @@ public class FlavorBibleChunkTextExtractor {
 
 		// Ingredients: 76-1163
 		final PdfCanvasProcessor parser = new PdfCanvasProcessor(listener);
-		parser.processPageContent(pdfDoc.getPage(76));
+		parser.processPageContent(pdfDoc.getPage(80));
+		parser.processPageContent(pdfDoc.getPage(81));
+		parser.processPageContent(pdfDoc.getPage(82));
+		parser.processPageContent(pdfDoc.getPage(83));
 
 		final List<FlavorBibleIngredient> flavorBibleIngredients = extractionStrategy.getFlavorBibleIngredients();
 
