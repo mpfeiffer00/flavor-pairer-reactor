@@ -29,6 +29,9 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private String previousAttribute = "";
 	private boolean isQuote = false;
 	private boolean isAuthor = false;
+	private boolean isDishesHeading = false;
+	private boolean isDishName = false;
+	private boolean isDishAuthor = false;
 	private PairingLevel pairingLevel = null;
 
 	@Override
@@ -40,6 +43,9 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			isHeading = RenderInfoTextAssistant.isHeading(renderInfo);
 			isQuote = RenderInfoTextAssistant.isQuoteText(renderInfo);
 			isAuthor = RenderInfoTextAssistant.isAuthorText(renderInfo);
+			isDishesHeading = RenderInfoTextAssistant.isDishesHeading(renderInfo);
+			isDishName = RenderInfoTextAssistant.isDishName(renderInfo);
+			isDishAuthor = RenderInfoTextAssistant.isDishAuthor(renderInfo);
 			// We want the pairing level from the first charcter after the return.
 			// ie: "MEATS, esp. roasted" which we want it to be 'marriage' and not
 			// 'recommended'.
@@ -105,7 +111,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				return;
 			}
 
-			if (type.equals(EventType.END_TEXT) && !getResultantText().equals("ALLSPICE")) {
+			if (type.equals(EventType.END_TEXT) && !getResultantText().equals("ARTICHOKES")) {
 				result.replace(0, result.length(), "");
 				return;
 			}
@@ -125,6 +131,8 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				ingredientPairings.clear();
 				isFlavorAffinityEntries = false;
 			} else if (isQuote || isAuthor) {
+				// Ignore for now.
+			} else if (isDishesHeading || isDishName || isDishAuthor) {
 				// Ignore for now.
 			} else if (!previousAttribute.isBlank()) {
 				// The season/taste/weight/volume/tips have return before the text. See ALLSPICE
@@ -209,6 +217,8 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			pairingLevel = null;
 			isQuote = false;
 			isAuthor = false;
+			isDishesHeading = false;
+			isDishName = false;
 		}
 
 		// TODO: GOING TO LOSE THE LAST HEADING BECAUSE WE DIDN'T FIND THE NEXT ONE

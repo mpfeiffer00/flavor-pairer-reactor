@@ -18,6 +18,29 @@ public class RenderInfoTextAssistant {
 		return font == null ? false : renderInfo.getFontSize() == 12.0;
 	}
 
+	public static boolean isDishesHeading(TextRenderInfo renderInfo) {
+		final PdfFont font = renderInfo.getFont();
+		if (font == null) {
+			return false;
+		}
+
+		final String fontName = font.getFontProgram().getFontNames().getFontName();
+		return fontName.endsWith("TimesNewRomanPS-BoldMT");
+	}
+
+	public static boolean isDishName(TextRenderInfo renderInfo) {
+		final PdfFont font = renderInfo.getFont();
+		return font == null ? false : renderInfo.getFontSize() == 15.0;
+	}
+
+	public static boolean isDishAuthor(TextRenderInfo renderInfo) {
+		final PdfFont font = renderInfo.getFont();
+		final boolean isDishSize = font == null ? false : renderInfo.getFontSize() == 20.0;
+
+		final String fontName = font.getFontProgram().getFontNames().getFontName();
+		return isDishSize && fontName.endsWith("LiberationSans");
+	}
+
 	public static PairingLevel determinePairingLevel(TextRenderInfo renderInfo) {
 		if (isBold(renderInfo)) {
 			if (isAllCapitalized(renderInfo)) {
