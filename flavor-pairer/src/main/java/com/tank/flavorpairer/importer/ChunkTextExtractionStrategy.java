@@ -27,7 +27,8 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private boolean isHeading = false;
 	private boolean isFlavorAffinityEntries = false;
 	private String previousAttribute = "";
-	private final boolean isQuote = false;
+	private boolean isQuote = false;
+	private boolean isAuthor = false;
 	private PairingLevel pairingLevel = null;
 
 	@Override
@@ -37,6 +38,8 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			final boolean firstRender = result.length() == 0;
 			boolean hardReturn = false;
 			isHeading = RenderInfoTextAssistant.isHeading(renderInfo);
+			isQuote = RenderInfoTextAssistant.isQuoteText(renderInfo);
+			isAuthor = RenderInfoTextAssistant.isAuthorText(renderInfo);
 			// We want the pairing level from the first charcter after the return.
 			// ie: "MEATS, esp. roasted" which we want it to be 'marriage' and not
 			// 'recommended'.
@@ -121,6 +124,8 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				currentFlavorBibleIngredientHeading.setIngredientName(getResultantText());
 				ingredientPairings.clear();
 				isFlavorAffinityEntries = false;
+			} else if (isQuote || isAuthor) {
+				// Ignore for now.
 			} else if (!previousAttribute.isBlank()) {
 				// The season/taste/weight/volume/tips have return before the text. See ALLSPICE
 				// for example
@@ -202,6 +207,8 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			result.replace(0, result.length(), "");
 			isHeading = false;
 			pairingLevel = null;
+			isQuote = false;
+			isAuthor = false;
 		}
 
 		// TODO: GOING TO LOSE THE LAST HEADING BECAUSE WE DIDN'T FIND THE NEXT ONE

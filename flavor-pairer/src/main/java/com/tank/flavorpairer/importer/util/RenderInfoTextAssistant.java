@@ -1,10 +1,22 @@
 package com.tank.flavorpairer.importer.util;
 
+import java.util.Arrays;
+
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
 import com.tank.flavorpairer.importer.PairingLevel;
 
 public class RenderInfoTextAssistant {
+
+	public static boolean isQuoteText(TextRenderInfo renderInfo) {
+		final float[] blue = new float[] { (float) 0.0, (float) 0.388235, (float) 0.533333 };
+		return Arrays.equals(renderInfo.getFillColor().getColorValue(), blue);
+	}
+
+	public static boolean isAuthorText(TextRenderInfo renderInfo) {
+		final PdfFont font = renderInfo.getFont();
+		return font == null ? false : renderInfo.getFontSize() == 12.0;
+	}
 
 	public static PairingLevel determinePairingLevel(TextRenderInfo renderInfo) {
 		if (isBold(renderInfo)) {

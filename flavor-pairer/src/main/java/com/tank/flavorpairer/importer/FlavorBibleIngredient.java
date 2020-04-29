@@ -16,7 +16,6 @@ public class FlavorBibleIngredient {
 	private Set<String> examples;
 	private Set<String> especially;
 	private Set<String> similarities;
-	private Set<String> quotes;
 
 	// private Set<FlavorBibleIngredient> affinities;
 	public String getIngredientName() {
@@ -123,19 +122,11 @@ public class FlavorBibleIngredient {
 		this.tips = tips;
 	}
 
-	public Set<String> getQuotes() {
-		return quotes;
-	}
-
-	public void setQuotes(Set<String> quotes) {
-		this.quotes = quotes;
-	}
-
 	@Override
 	public String toString() {
 		return "FlavorBibleIngredient [ingredientName=" + ingredientName + ", season=" + season + ", taste=" + taste
 				+ ", weight=" + weight + ", volume=" + volume + ", tips=" + tips + ", ingredients=" + ingredients
 				+ ", pairingLevel=" + pairingLevel + ", flavorAffinities=" + flavorAffinities + ", examples=" + examples
-				+ ", especially=" + especially + ", similarities=" + similarities + ", quotes=" + quotes + "]";
+				+ ", especially=" + especially + ", similarities=" + similarities + "]";
 	}
 }
