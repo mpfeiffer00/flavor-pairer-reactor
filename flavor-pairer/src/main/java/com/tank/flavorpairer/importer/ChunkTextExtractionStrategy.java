@@ -28,7 +28,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private boolean isFlavorAffinityEntries = false;
 	private String previousAttribute = "";
 	private final boolean isQuote = false;
-	private PairingLevel pairingLevel = PairingLevel.NORMAL;
+	private PairingLevel pairingLevel = null;
 
 	@Override
 	public void eventOccurred(IEventData data, EventType type) {
@@ -37,7 +37,11 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			final boolean firstRender = result.length() == 0;
 			boolean hardReturn = false;
 			isHeading = RenderInfoTextAssistant.isHeading(renderInfo);
-			pairingLevel = RenderInfoTextAssistant.determinePairingLevel(renderInfo);
+			// We want the pairing level from the first charcter after the return.
+			// ie: "MEATS, esp. roasted" which we want it to be 'marriage' and not
+			// 'recommended'.
+			pairingLevel = pairingLevel == null ? RenderInfoTextAssistant.determinePairingLevel(renderInfo)
+					: pairingLevel;
 
 			final LineSegment segment = renderInfo.getBaseline();
 			final Vector start = segment.getStartPoint();
@@ -137,7 +141,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 					currentFlavorBibleIngredientHeading.setTips(getResultantText());
 					break;
 				default:
-					System.out.println("wut: " + previousAttribute);
+					throw new RuntimeException("idk what this previousAttribute is: " + getResultantText());
 				}
 				previousAttribute = "";
 			} else if (getResultantText().startsWith("Season") || getResultantText().startsWith("Taste")
@@ -197,6 +201,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 
 			result.replace(0, result.length(), "");
 			isHeading = false;
+			pairingLevel = null;
 		}
 
 		// TODO: GOING TO LOSE THE LAST HEADING BECAUSE WE DIDN'T FIND THE NEXT ONE
