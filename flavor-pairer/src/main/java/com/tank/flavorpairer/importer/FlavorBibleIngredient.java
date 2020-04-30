@@ -10,6 +10,7 @@ public class FlavorBibleIngredient {
 	private String weight;
 	private String volume;
 	private String tips;
+	private String techniques;
 	private final Set<FlavorBibleIngredient> ingredients = new HashSet<>();
 	private PairingLevel pairingLevel;
 	private final Set<String> flavorAffinities = new HashSet<>();
@@ -122,11 +123,20 @@ public class FlavorBibleIngredient {
 		this.tips = tips;
 	}
 
+	public String getTechniques() {
+		return techniques;
+	}
+
+	public void setTechniques(String techniques) {
+		this.techniques = techniques;
+	}
+
 	@Override
 	public String toString() {
 		return "FlavorBibleIngredient [ingredientName=" + ingredientName + ", season=" + season + ", taste=" + taste
-				+ ", weight=" + weight + ", volume=" + volume + ", tips=" + tips + ", ingredients=" + ingredients
-				+ ", pairingLevel=" + pairingLevel + ", flavorAffinities=" + flavorAffinities + ", examples=" + examples
-				+ ", especially=" + especially + ", similarities=" + similarities + "]";
+				+ ", weight=" + weight + ", volume=" + volume + ", tips=" + tips + ", techniques=" + techniques
+				+ ", ingredients=" + ingredients + ", pairingLevel=" + pairingLevel + ", flavorAffinities="
+				+ flavorAffinities + ", examples=" + examples + ", especially=" + especially + ", similarities="
+				+ similarities + "]";
 	}
 }

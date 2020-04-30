@@ -153,13 +153,16 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				case "Tips:":
 					currentFlavorBibleIngredientHeading.setTips(getResultantText());
 					break;
+				case "Techniques:":
+					currentFlavorBibleIngredientHeading.setTechniques(getResultantText());
+					break;
 				default:
 					throw new RuntimeException("idk what this previousAttribute is: " + getResultantText());
 				}
 				previousAttribute = "";
 			} else if (getResultantText().startsWith("Season") || getResultantText().startsWith("Taste")
 					|| getResultantText().startsWith("Weight") || getResultantText().startsWith("Volume")
-					|| getResultantText().startsWith("Tips")) {
+					|| getResultantText().startsWith("Tips") || getResultantText().startsWith("Techniques")) {
 				previousAttribute = getResultantText();
 			} else if ("Flavor Affinities".equals(getResultantText())) {
 				isFlavorAffinityEntries = true;
