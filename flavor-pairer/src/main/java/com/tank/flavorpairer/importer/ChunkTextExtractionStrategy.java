@@ -165,7 +165,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				isFlavorAffinityEntries = true;
 			} else if (isFlavorAffinityEntries) {
 				currentFlavorBibleIngredientHeading.addFlavorAffinity(getResultantText());
-			} else if (getResultantText().contains("esp.")) {
+			} else if (getResultantText().toLowerCase().contains("esp.")) {
 				// Ugh. "esp." is sometimes on a new line, sometimes not. Trying to detect if it
 				// is a newline if "esp" is at beginning of text
 				if (getResultantText().replaceFirst(",", "").trim().startsWith("esp.")) {
@@ -182,7 +182,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 					ingredient.setEspecially(Stream.of(especiallies[1]).map(x -> x.trim()).collect(Collectors.toSet()));
 					ingredientPairings.add(ingredient);
 				}
-			} else if (getResultantText().contains("e.g.")) {
+			} else if (getResultantText().toLowerCase().contains("e.g.")) {
 				final String[] splitLine = getResultantText().replaceFirst(",", "").trim().replace("(", "")
 						.replace(")", "").split("e.g.");
 				final Set<String> examples = Stream.of(splitLine[1].split(",")).map(x -> x.trim())
