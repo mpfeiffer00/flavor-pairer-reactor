@@ -15,6 +15,7 @@ import com.itextpdf.kernel.pdf.canvas.parser.data.IEventData;
 import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
 import com.tank.flavorpairer.importer.util.DishAttribute;
+import com.tank.flavorpairer.importer.util.IngredientAttribute;
 import com.tank.flavorpairer.importer.util.RenderInfoTextAssistant;
 
 public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
@@ -27,7 +28,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 
 	private boolean isHeading = false;
 	private boolean isFlavorAffinityEntries = false;
-	private String previousAttribute = "";
+	private IngredientAttribute ingredientAttribute = null;
 	private boolean isQuote = false;
 	private boolean isAuthor = false;
 	private DishAttribute dishAttribute = null;
@@ -133,36 +134,37 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				// Ignore for now.
 			} else if (dishAttribute != null) {
 				// Ignore for now.
-			} else if (!previousAttribute.isBlank()) {
+			} else if (ingredientAttribute != null) {
 				// The season/taste/weight/volume/tips have return before the text. See ALLSPICE
 				// for example
-				switch (previousAttribute) {
-				case "Season:":
+				switch (ingredientAttribute) {
+				case SEASON:
 					currentFlavorBibleIngredientHeading.setSeason(getResultantText());
 					break;
-				case "Taste:":
+				case TASTE:
 					currentFlavorBibleIngredientHeading.setTaste(getResultantText());
 					break;
-				case "Weight:":
+				case WEIGHT:
 					currentFlavorBibleIngredientHeading.setWeight(getResultantText());
 					break;
-				case "Volume:":
+				case VOLUME:
 					currentFlavorBibleIngredientHeading.setVolume(getResultantText());
 					break;
-				case "Tips:":
+				case TIPS:
 					currentFlavorBibleIngredientHeading.setTips(getResultantText());
 					break;
-				case "Techniques:":
+				case TECHNIQUE:
 					currentFlavorBibleIngredientHeading.setTechniques(getResultantText());
 					break;
 				default:
 					throw new RuntimeException("idk what this previousAttribute is: " + getResultantText());
 				}
-				previousAttribute = "";
+				ingredientAttribute = null;
 			} else if (getResultantText().startsWith("Season") || getResultantText().startsWith("Taste")
 					|| getResultantText().startsWith("Weight") || getResultantText().startsWith("Volume")
 					|| getResultantText().startsWith("Tips") || getResultantText().startsWith("Techniques")) {
-				previousAttribute = getResultantText();
+				// The attribute always comes with a colon
+				ingredientAttribute = IngredientAttribute.getAttributeByText(getResultantText().replace(":", ""));
 			} else if ("Flavor Affinities".equals(getResultantText())) {
 				isFlavorAffinityEntries = true;
 			} else if (isFlavorAffinityEntries) {
