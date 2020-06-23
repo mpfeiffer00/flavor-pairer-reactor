@@ -33,6 +33,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private boolean isDishName = false;
 	private boolean isDishAuthor = false;
 	private PairingLevel pairingLevel = null;
+	private boolean isEndingWithColon = false;
 
 	@Override
 	public void eventOccurred(IEventData data, EventType type) {
@@ -168,8 +169,35 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				isFlavorAffinityEntries = true;
 			} else if (isFlavorAffinityEntries) {
 				currentFlavorBibleIngredientHeading.addFlavorAffinity(getResultantText());
+			} else if (getResultantText().contains(":") || isEndingWithColon) {
+				if (getResultantText().endsWith(":")) {
+					// Edge case: Page 112, under 'Artichokes', 'LEMON:' has an END_OF_TEXT.
+					// Need to combine with next like of 'confit, juice, zest'
+					final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
+					ingredient.setIngredientName(getResultantText().replace(":", "").trim());
+					ingredient.setPairingLevel(pairingLevel);
+					ingredientPairings.add(ingredient);
+					isEndingWithColon = true;
+				} else if (isEndingWithColon) {
+					final Set<String> examples = Stream.of(getResultantText().split(",")).map(x -> x.trim())
+							.filter(x -> !x.isBlank()).collect(Collectors.toSet());
+					ingredientPairings.get(ingredientPairings.size() - 1).setExamples(examples);
+					isEndingWithColon = false;
+				} else {
+					final String[] splitLine = getResultantText().split(":");
+					final Set<String> examples = splitLine.length == 1 ? Collections.emptySet()
+							: Stream.of(splitLine[1].split(",")).map(x -> x.trim()).filter(x -> !x.isBlank())
+									.collect(Collectors.toSet());
+
+					final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
+					ingredient.setExamples(examples);
+					ingredient.setIngredientName(splitLine[0].trim());
+					ingredient.setPairingLevel(pairingLevel);
+					ingredientPairings.add(ingredient);
+					isEndingWithColon = false;
+				}
 			} else if (getResultantText().toLowerCase().contains("esp.")) {
-				// Ugh. "esp." is sometimes on a new line, sometimes not. Trying to detect if it
+				// Ugh. "esp." is sometimes on a new line. Trying to detect if it
 				// is a newline if "esp" is at beginning of text
 				if (getResultantText().replaceFirst(",", "").trim().startsWith("esp.")) {
 					final Set<String> especiallies = Stream
