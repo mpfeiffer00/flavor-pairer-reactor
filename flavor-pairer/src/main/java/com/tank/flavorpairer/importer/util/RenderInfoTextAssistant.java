@@ -28,6 +28,23 @@ public class RenderInfoTextAssistant {
 		return fontName.endsWith("TimesNewRomanPS-BoldMT");
 	}
 
+	/**
+	 * Determines the Dish attribute.
+	 * 
+	 * @param renderInfo The {@link TextRenderInfo} to inspect.
+	 * @return The {@link DishAttribute}. Will be null if not a dish attribute.
+	 */
+	public static DishAttribute getDishAttribute(TextRenderInfo renderInfo) {
+		if (isDishesHeading(renderInfo)) {
+			return DishAttribute.HEADING;
+		} else if (isDishAuthor(renderInfo)) {
+			return DishAttribute.AUTHOR;
+		} else if (isDishName(renderInfo)) {
+			return DishAttribute.NAME;
+		}
+		return null;
+	}
+
 	public static boolean isDishName(TextRenderInfo renderInfo) {
 		final PdfFont font = renderInfo.getFont();
 		return font == null ? false : renderInfo.getFontSize() == 15.0;

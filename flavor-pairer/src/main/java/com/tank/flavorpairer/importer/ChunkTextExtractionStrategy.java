@@ -14,6 +14,7 @@ import com.itextpdf.kernel.pdf.canvas.parser.EventType;
 import com.itextpdf.kernel.pdf.canvas.parser.data.IEventData;
 import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
+import com.tank.flavorpairer.importer.util.DishAttribute;
 import com.tank.flavorpairer.importer.util.RenderInfoTextAssistant;
 
 public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
@@ -29,9 +30,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private String previousAttribute = "";
 	private boolean isQuote = false;
 	private boolean isAuthor = false;
-	private boolean isDishesHeading = false;
-	private boolean isDishName = false;
-	private boolean isDishAuthor = false;
+	private DishAttribute dishAttribute = null;
 	private PairingLevel pairingLevel = null;
 	private boolean isEndingWithColon = false;
 
@@ -44,9 +43,8 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			isHeading = RenderInfoTextAssistant.isHeading(renderInfo);
 			isQuote = RenderInfoTextAssistant.isQuoteText(renderInfo);
 			isAuthor = RenderInfoTextAssistant.isAuthorText(renderInfo);
-			isDishesHeading = RenderInfoTextAssistant.isDishesHeading(renderInfo);
-			isDishName = RenderInfoTextAssistant.isDishName(renderInfo);
-			isDishAuthor = RenderInfoTextAssistant.isDishAuthor(renderInfo);
+			dishAttribute = RenderInfoTextAssistant.getDishAttribute(renderInfo);
+
 			// We want the pairing level from the first charcter after the return.
 			// ie: "MEATS, esp. roasted" which we want it to be 'marriage' and not
 			// 'recommended'.
@@ -133,7 +131,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 				isFlavorAffinityEntries = false;
 			} else if (isQuote || isAuthor) {
 				// Ignore for now.
-			} else if (isDishesHeading || isDishName || isDishAuthor) {
+			} else if (dishAttribute != null) {
 				// Ignore for now.
 			} else if (!previousAttribute.isBlank()) {
 				// The season/taste/weight/volume/tips have return before the text. See ALLSPICE
@@ -247,8 +245,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 			pairingLevel = null;
 			isQuote = false;
 			isAuthor = false;
-			isDishesHeading = false;
-			isDishName = false;
+			dishAttribute = null;
 		}
 
 		// TODO: GOING TO LOSE THE LAST HEADING BECAUSE WE DIDN'T FIND THE NEXT ONE
