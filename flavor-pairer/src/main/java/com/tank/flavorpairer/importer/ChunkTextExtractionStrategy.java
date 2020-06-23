@@ -203,8 +203,7 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 					final Set<String> especiallies = Stream
 							.of(getResultantText().replaceFirst(", esp.", "").trim().split(","))
 							.collect(Collectors.toSet());
-					ingredientPairings.get(ingredientPairings.size() - 1)
-							.setEspecially(especiallies.stream().map(x -> x.trim()).collect(Collectors.toSet()));
+					ingredientPairings.get(ingredientPairings.size() - 1).setEspecially(especiallies);
 				} else {
 					final String[] especiallies = getResultantText().replaceFirst("esp.", "").split(",");
 					final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
