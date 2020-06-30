@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.common.collect.Sets;
 import com.itextpdf.kernel.geom.LineSegment;
@@ -14,11 +12,17 @@ import com.itextpdf.kernel.pdf.canvas.parser.EventType;
 import com.itextpdf.kernel.pdf.canvas.parser.data.IEventData;
 import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
+import com.tank.flavorpairer.importer.object.EndOfTextCriteria;
+import com.tank.flavorpairer.importer.object.EndOfTextOverrideProcessor;
+import com.tank.flavorpairer.importer.object.EndOfTextStateCriteria;
 import com.tank.flavorpairer.importer.util.DishAttribute;
 import com.tank.flavorpairer.importer.util.IngredientAttribute;
 import com.tank.flavorpairer.importer.util.RenderInfoTextAssistant;
 
 public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
+
+	private final EndOfTextOverrideProcessor endOfTextOverrideProcessor = new EndOfTextOverrideProcessor();
+	private final EndOfTextStateCriteria endOfTextStateCriteria = new EndOfTextStateCriteria();
 	private Vector lastStart;
 	private Vector lastEnd;
 	private final StringBuilder result = new StringBuilder();
@@ -27,13 +31,13 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private FlavorBibleIngredient currentFlavorBibleIngredientHeading = null;
 
 	private boolean isHeading = false;
-	private boolean isFlavorAffinityEntries = false;
-	private IngredientAttribute ingredientAttribute = null;
+	private final boolean isFlavorAffinityEntries = false;
+	private final IngredientAttribute ingredientAttribute = null;
 	private boolean isQuote = false;
 	private boolean isAuthor = false;
 	private DishAttribute dishAttribute = null;
 	private PairingLevel pairingLevel = null;
-	private boolean isEndingWithColon = false;
+	private final boolean isEndingWithColon = false;
 
 	@Override
 	public void eventOccurred(IEventData data, EventType type) {
@@ -118,9 +122,14 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 		}
 
 		if (type.equals(EventType.END_TEXT) && !getResultantText().isBlank()) {
+			final EndOfTextCriteria endOfTextCriteria = EndOfTextCriteria.builder().withText(getResultantText())
+					.withIsHeading(isHeading).withDishAttribute(dishAttribute).withIsAuthor(isAuthor)
+					.withIsEndingWithColon(isEndingWithColon).withIsFlavorAffinityEntries(isFlavorAffinityEntries)
+					.withIsQuote(isQuote).withPairingLevel(pairingLevel).build();
+
 			if (isHeading) {
 				// First heading of file will not have any paired ingredients, can only add at
-				// end of heading resolution
+				// end of heading resolution. We need to keep this to keep track of transitions.
 				if (currentFlavorBibleIngredientHeading != null) {
 					currentFlavorBibleIngredientHeading.addFlavorBibleIngredient(Sets.newHashSet(ingredientPairings));
 					flavorBibleIngredients.add(currentFlavorBibleIngredientHeading);
@@ -128,113 +137,20 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 
 				currentFlavorBibleIngredientHeading = new FlavorBibleIngredient();
 				currentFlavorBibleIngredientHeading.setIngredientName(getResultantText());
+
+				endOfTextStateCriteria.currentFlavorBibleIngredientHeading = currentFlavorBibleIngredientHeading;
 				ingredientPairings.clear();
-				isFlavorAffinityEntries = false;
-			} else if (isQuote || isAuthor) {
-				// Ignore for now.
-			} else if (dishAttribute != null) {
-				// Ignore for now.
-			} else if (ingredientAttribute != null) {
-				// The season/taste/weight/volume/tips have return before the text. See ALLSPICE
-				// for example
-				switch (ingredientAttribute) {
-				case SEASON:
-					currentFlavorBibleIngredientHeading.setSeason(getResultantText());
-					break;
-				case TASTE:
-					currentFlavorBibleIngredientHeading.setTaste(getResultantText());
-					break;
-				case WEIGHT:
-					currentFlavorBibleIngredientHeading.setWeight(getResultantText());
-					break;
-				case VOLUME:
-					currentFlavorBibleIngredientHeading.setVolume(getResultantText());
-					break;
-				case TIPS:
-					currentFlavorBibleIngredientHeading.setTips(getResultantText());
-					break;
-				case TECHNIQUE:
-					currentFlavorBibleIngredientHeading.setTechniques(getResultantText());
-					break;
-				default:
-					throw new RuntimeException("idk what this previousAttribute is: " + getResultantText());
+				endOfTextStateCriteria.ingredientPairings = new ArrayList<>();
+				endOfTextStateCriteria.isFlavorAffinityEntries = false;
+			} else if (endOfTextOverrideProcessor.process(endOfTextCriteria, endOfTextStateCriteria)) {
+				if (endOfTextStateCriteria.hasUpdatedState) {
+					currentFlavorBibleIngredientHeading = endOfTextStateCriteria.currentFlavorBibleIngredientHeading;
+					if (endOfTextStateCriteria.ingredientPairings != null
+							&& !endOfTextStateCriteria.ingredientPairings.isEmpty()) {
+						ingredientPairings.addAll(endOfTextStateCriteria.ingredientPairings);
+					}
 				}
-				ingredientAttribute = null;
-			} else if (getResultantText().startsWith("Season") || getResultantText().startsWith("Taste")
-					|| getResultantText().startsWith("Weight") || getResultantText().startsWith("Volume")
-					|| getResultantText().startsWith("Tips") || getResultantText().startsWith("Techniques")) {
-				// The attribute always comes with a colon
-				ingredientAttribute = IngredientAttribute.getAttributeByText(getResultantText().replace(":", ""));
-			} else if ("Flavor Affinities".equals(getResultantText())) {
-				isFlavorAffinityEntries = true;
-			} else if (isFlavorAffinityEntries) {
-				currentFlavorBibleIngredientHeading.addFlavorAffinity(getResultantText());
-			} else if (getResultantText().contains(":") || isEndingWithColon) {
-				if (getResultantText().endsWith(":")) {
-					// Edge case: Page 112, under 'Artichokes', 'LEMON:' has an END_OF_TEXT.
-					// Need to combine with next like of 'confit, juice, zest'
-					final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
-					ingredient.setIngredientName(getResultantText().replace(":", "").trim());
-					ingredient.setPairingLevel(pairingLevel);
-					ingredientPairings.add(ingredient);
-					isEndingWithColon = true;
-				} else if (isEndingWithColon) {
-					final Set<String> examples = Stream.of(getResultantText().split(",")).map(x -> x.trim())
-							.filter(x -> !x.isBlank()).collect(Collectors.toSet());
-					ingredientPairings.get(ingredientPairings.size() - 1).setExamples(examples);
-					isEndingWithColon = false;
-				} else {
-					final String[] splitLine = getResultantText().split(":");
-					final Set<String> examples = splitLine.length == 1 ? Collections.emptySet()
-							: Stream.of(splitLine[1].split(",")).map(x -> x.trim()).filter(x -> !x.isBlank())
-									.collect(Collectors.toSet());
-
-					final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
-					ingredient.setExamples(examples);
-					ingredient.setIngredientName(splitLine[0].trim());
-					ingredient.setPairingLevel(pairingLevel);
-					ingredientPairings.add(ingredient);
-					isEndingWithColon = false;
-				}
-			} else if (getResultantText().toLowerCase().contains("esp.")) {
-				// Ugh. "esp." is sometimes on a new line. Trying to detect if it
-				// is a newline if "esp" is at beginning of text
-				if (getResultantText().replaceFirst(",", "").trim().startsWith("esp.")) {
-					final Set<String> especiallies = Stream
-							.of(getResultantText().replaceFirst(", esp.", "").trim().split(","))
-							.collect(Collectors.toSet());
-					ingredientPairings.get(ingredientPairings.size() - 1).setEspecially(especiallies);
-				} else {
-					final String[] especiallies = getResultantText().replaceFirst("esp.", "").split(",");
-					final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
-					ingredient.setIngredientName(especiallies[0].trim());
-					ingredient.setPairingLevel(pairingLevel);
-					ingredient.setEspecially(Stream.of(especiallies[1]).map(x -> x.trim()).collect(Collectors.toSet()));
-					ingredientPairings.add(ingredient);
-				}
-			} else if (getResultantText().toLowerCase().contains("e.g.")) {
-				final String[] splitLine = getResultantText().replaceFirst(",", "").trim().replace("(", "")
-						.replace(")", "").split("e.g.");
-				final Set<String> examples = Stream.of(splitLine[1].split(",")).map(x -> x.trim())
-						.filter(x -> !x.isBlank()).collect(Collectors.toSet());
-
-				final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
-				ingredient.setExamples(examples);
-				ingredient.setIngredientName(splitLine[0].trim());
-				ingredient.setPairingLevel(pairingLevel);
-				ingredientPairings.add(ingredient);
-			} else if (getResultantText().contains("See")) {
-				final String[] splitLine = getResultantText().replaceFirst("See", "").replaceFirst("also", "")
-						.replace("(", "").replace(")", "").split(",");
-				final Set<String> similarities = Stream.of(splitLine).map(x -> x.trim()).filter(x -> !x.isBlank())
-						.collect(Collectors.toSet());
-				currentFlavorBibleIngredientHeading.setSimilarities(similarities);
-			} else if (getResultantText().trim().startsWith(",")) {
-				// Qualifies on the case "rice, basmati", except with the new line misformat.
-				// Treat it as "esp."
-				final String[] splitLine = getResultantText().split(",");
-				ingredientPairings.get(ingredientPairings.size() - 1)
-						.setEspecially(Stream.of(splitLine[1]).map(x -> x.trim()).collect(Collectors.toSet()));
+				endOfTextStateCriteria.hasUpdatedState = false;
 			} else {
 				final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
 				ingredient.setIngredientName(getResultantText());
