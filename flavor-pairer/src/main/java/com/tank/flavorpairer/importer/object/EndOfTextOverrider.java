@@ -1,5 +1,11 @@
 package com.tank.flavorpairer.importer.object;
 
+/**
+ * Interface for overriding End of Text signals.
+ * 
+ * @author tank
+ *
+ */
 public interface EndOfTextOverrider {
 	/**
 	 * Overrides general parsing of an end of text signal.

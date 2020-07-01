@@ -7,6 +7,20 @@ import java.util.stream.Stream;
 
 import com.tank.flavorpairer.importer.FlavorBibleIngredient;
 
+/**
+ * Overrider to assist in cases where an End of Text signal is after a colon.
+ * <br>
+ * Example: <br>
+ * <ul>
+ * <li>Page: 112</li>
+ * <li>Heading: Artichokes</li>
+ * <li>Text: "LEMON: confit, juice, zest"</li>
+ * <li>Issue: A EoT is after the colon, causing the remaining of the line to be
+ * interpreted as new ingredient pairings.</li>
+ * </ul>
+ * 
+ * @author tank
+ */
 public class MisformatColonEndOfTextOverrider implements EndOfTextOverrider {
 	@Override
 	public boolean override(EndOfTextCriteria endOfTextCriteria, EndOfTextStateCriteria endOfTextStateCriteria) {
@@ -16,8 +30,6 @@ public class MisformatColonEndOfTextOverrider implements EndOfTextOverrider {
 		}
 
 		if (text.endsWith(":")) {
-			// Edge case: Page 112, under 'Artichokes', 'LEMON:' has an END_OF_TEXT.
-			// Need to combine with next like of 'confit, juice, zest'
 			final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
 			ingredient.setIngredientName(text.replace(":", "").trim());
 			ingredient.setPairingLevel(endOfTextCriteria.getPairingLevel());
@@ -34,7 +46,6 @@ public class MisformatColonEndOfTextOverrider implements EndOfTextOverrider {
 			final Set<String> examples = splitLine.length == 1 ? Collections.emptySet()
 					: Stream.of(splitLine[1].split(",")).map(x -> x.trim()).filter(x -> !x.isBlank())
 							.collect(Collectors.toSet());
-
 			final FlavorBibleIngredient ingredient = new FlavorBibleIngredient();
 			ingredient.setExamples(examples);
 			ingredient.setIngredientName(splitLine[0].trim());

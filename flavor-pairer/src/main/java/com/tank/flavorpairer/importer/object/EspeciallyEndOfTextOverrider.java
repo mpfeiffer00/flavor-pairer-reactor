@@ -6,6 +6,20 @@ import java.util.stream.Stream;
 
 import com.tank.flavorpairer.importer.FlavorBibleIngredient;
 
+/**
+ * Overrider to assist in cases where an End of Text signal is after an "esp.".
+ * <br>
+ * Example: <br>
+ * <ul>
+ * <li>Page: 76</li>
+ * <li>Heading: Achiote Seeds</li>
+ * <li>Text: TODO</li>
+ * <li>Issue: A EoT is after the "esp.", causing the remaining of the line to be
+ * interpreted as new ingredient pairings.</li>
+ * </ul>
+ * 
+ * @author tank
+ */
 public class EspeciallyEndOfTextOverrider implements EndOfTextOverrider {
 	@Override
 	public boolean override(EndOfTextCriteria endOfTextCriteria, EndOfTextStateCriteria endOfTextStateCriteria) {

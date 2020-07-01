@@ -1,5 +1,19 @@
 package com.tank.flavorpairer.importer.object;
 
+/**
+ * Overrider to assist in cases where an End of Text signal is after a "Flavor
+ * Affinities". <br>
+ * Example: <br>
+ * <ul>
+ * <li>Page: 113</li>
+ * <li>Heading: Artichokes</li>
+ * <li>Text: "Flavor Affinities"</li>
+ * <li>Issue: A EoT is after the "Flavor Affinities", causing the remaining of
+ * the line to be interpreted as new ingredient pairings.</li>
+ * </ul>
+ * 
+ * @author tank
+ */
 public class FlavorAffinitiesEndOfTextOverrider implements EndOfTextOverrider {
 	@Override
 	public boolean override(EndOfTextCriteria endOfTextCriteria, EndOfTextStateCriteria endOfTextStateCriteria) {

@@ -2,6 +2,20 @@ package com.tank.flavorpairer.importer.object;
 
 import com.tank.flavorpairer.importer.util.IngredientAttribute;
 
+/**
+ * Overrider to assist in cases where an End of Text signal is after a various
+ * ingredient attributes. <br>
+ * Example: <br>
+ * <ul>
+ * <li>Page: 111</li>
+ * <li>Heading: Artichokes</li>
+ * <li>Text: "Season: spring-early autumn"</li>
+ * <li>Issue: A EoT is after the ingredient attributes, causing the remaining of
+ * the line to be interpreted as new ingredient pairings.</li>
+ * </ul>
+ * 
+ * @author tank
+ */
 public class IngredientAttributeEndOfTextOverrider implements EndOfTextOverrider {
 	@Override
 	public boolean override(EndOfTextCriteria endOfTextCriteria, EndOfTextStateCriteria endOfTextStateCriteria) {
