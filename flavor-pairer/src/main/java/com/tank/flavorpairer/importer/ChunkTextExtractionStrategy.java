@@ -16,7 +16,6 @@ import com.tank.flavorpairer.importer.object.EndOfTextCriteria;
 import com.tank.flavorpairer.importer.object.EndOfTextOverrideProcessor;
 import com.tank.flavorpairer.importer.object.EndOfTextStateCriteria;
 import com.tank.flavorpairer.importer.util.DishAttribute;
-import com.tank.flavorpairer.importer.util.IngredientAttribute;
 import com.tank.flavorpairer.importer.util.RenderInfoTextAssistant;
 
 public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
@@ -26,18 +25,17 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 	private Vector lastStart;
 	private Vector lastEnd;
 	private final StringBuilder result = new StringBuilder();
+
+	// State to span PDF reading. TODO: re-design.
 	private final List<FlavorBibleIngredient> flavorBibleIngredients = new ArrayList<>();
 	private final List<FlavorBibleIngredient> ingredientPairings = new ArrayList<>();
 	private FlavorBibleIngredient currentFlavorBibleIngredientHeading = null;
 
 	private boolean isHeading = false;
-	private final boolean isFlavorAffinityEntries = false;
-	private final IngredientAttribute ingredientAttribute = null;
 	private boolean isQuote = false;
 	private boolean isAuthor = false;
 	private DishAttribute dishAttribute = null;
 	private PairingLevel pairingLevel = null;
-	private final boolean isEndingWithColon = false;
 
 	@Override
 	public void eventOccurred(IEventData data, EventType type) {
@@ -124,7 +122,6 @@ public class ChunkTextExtractionStrategy extends SimpleTextExtractionStrategy {
 		if (type.equals(EventType.END_TEXT) && !getResultantText().isBlank()) {
 			final EndOfTextCriteria endOfTextCriteria = EndOfTextCriteria.builder().withText(getResultantText())
 					.withIsHeading(isHeading).withDishAttribute(dishAttribute).withIsAuthor(isAuthor)
-					.withIsEndingWithColon(isEndingWithColon).withIsFlavorAffinityEntries(isFlavorAffinityEntries)
 					.withIsQuote(isQuote).withPairingLevel(pairingLevel).build();
 
 			if (isHeading) {
